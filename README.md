@@ -1,6 +1,6 @@
 # 🎄 Advent of Code 2022 🎄
 
-![AoC2022 logo](header.png)
+![AoC logo](header.png)
 
 My solutions for [Advent of Code](https://adventofcode.com/)
 
