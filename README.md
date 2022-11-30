@@ -1,6 +1,8 @@
-# AdventOfCode
+# 🎄 Advent of Code 2022 🎄
 
-Advent of code solutions
+![AoC2022 logo](header.png)
+
+My solutions for [Advent of Code](https://adventofcode.com/)
 
 ## Intro
 
