@@ -45,12 +45,17 @@ function setcolors(){
 # | Extract Session token                                |
 # +------------------------------------------------------+
 
+##macOS
+ROOT_DIR=$PWD
+
+## BASH
 # Get the directory where the script is located
-ROOT_DIR=$(dirname -- ${BASH_SOURCE[0]})
+# ROOT_DIR=$(dirname -- ${BASH_SOURCE[0]})
 # File where the session token is stored
-ENV_FILE=${ROOT_DIR}/.env
+# ENV_FILE=${ROOT_DIR}/.env
 # Extract the session token
-SESSION_TOKEN=$(grep SESSION "${ENV_FILE}" | sed s/SESSION=//g)
+# SESSION_TOKEN=$(grep SESSION "${ENV_FILE}" | sed s/SESSION=//g)
+
 
 # +------------------------------------------------------+
 # | Get the script arguments (day and year)              |
@@ -89,7 +94,8 @@ echo "========================= Downloading AOC Input========================="
 # | Curl command                                         |
 # +------------------------------------------------------+
 CMD="curl --silent --ssl-no-revoke"
-CMD=${CMD}" -b session=${SESSION_TOKEN}"
+# CMD=${CMD}" -b session=${SESSION_TOKEN}"
+CMD=${CMD}" -b session=53616c7465645f5fd852f8ec147350b7a3976f6d5b086f876b84ae7b45dfa58d96a63a507c44a52ace0cb108f01303c8fcaaaf3f71c918c6f388649890d482f2"
 CMD=${CMD}" https://adventofcode.com/${YEAR}/day/${DAY}/input"
 CMD=${CMD}" -o ${OUTPUT_FILE}"
 
