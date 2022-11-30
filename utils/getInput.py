@@ -23,7 +23,7 @@ def arg_to_int(i, name):
 
 
 def get_single_input(input_year, input_day):
-    dir_name = os.path.join(BASE_DIR, "aoc", str(input_year), f"Day{input_day:02}")
+    dir_name = os.path.join(BASE_DIR, "../src", str(input_year), f"Day-{input_day:02}")
     cookies = {}
 
     try:
@@ -52,7 +52,7 @@ def get_single_input(input_year, input_day):
 
 def get_all_inputs(input_year):
     for inputDay in range(1, 26):
-        dir_name = os.path.join(BASE_DIR, "aoc", str(input_year), f"Day{inputDay:02}")
+        dir_name = os.path.join(BASE_DIR, "../src", str(input_year), f"Day-{inputDay:02}")
         cookies = {}
 
         try:
