@@ -50,7 +50,7 @@ def part2(data):
     return count
 
 
-with open('../Inputs/InputDay4.txt', 'r') as f1:
+with open('../../../curr/2020/Inputs/InputDay4.txt', 'r') as f1:
     inputData = f1.read()
     print('Part 1: {}' .format(part1(inputData)))
     print('Part 2: {}' .format(part2(inputData)))

@@ -1,7 +1,7 @@
 from collections import defaultdict, deque
 import re
 
-with open("../Inputs/InputDay7.txt") as file:
+with open("../../../curr/2020/Inputs/InputDay7.txt") as file:
     lines = [x.strip() for x in file.readlines()]
 
 

@@ -3,7 +3,7 @@ def selector_v2(input):
     return int(seat[:7], 2) * 8 + int(seat[-3:], 2)
 
 
-boardingPasses = open('../Inputs/InputDay5.txt').read().splitlines()
+boardingPasses = open('../../../curr/2020/Inputs/InputDay5.txt').read().splitlines()
 seatIDs = [selector_v2(ticket) for ticket in boardingPasses]
 first = max(seatIDs)
 print('Part one: ', first)

@@ -1,4 +1,4 @@
-with open('../Inputs/InputDay6.txt') as file:
+with open('../../../curr/2020/Inputs/InputDay6.txt') as file:
     lines = file.read().strip()
 
 partOneGroup = lines.split('\n\n')

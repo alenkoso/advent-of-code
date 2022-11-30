@@ -1,6 +1,6 @@
 import collections
 
-with open("../Inputs/InputDay2.txt", 'r') as f:
+with open("../../../curr/2020/Inputs/InputDay2.txt", 'r') as f:
     partOne = 0
     partTwo = 0
     for line in f.read().splitlines():

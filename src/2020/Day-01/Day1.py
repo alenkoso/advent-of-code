@@ -1,6 +1,6 @@
 array = []
 
-with open('../Inputs/InputDay1.txt') as f:
+with open('../../../curr/2020/Inputs/InputDay1.txt') as f:
     for line in f:
         array.append(int(line))
 

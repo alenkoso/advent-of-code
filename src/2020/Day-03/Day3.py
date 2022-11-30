@@ -11,7 +11,7 @@ def find_trees(data, right, down):
     return count
 
 
-with open("../Inputs/InputDay3.txt", 'r') as file:
+with open("../../../curr/2020/Inputs/InputDay3.txt", 'r') as file:
     data = [value.strip() for value in file.read().splitlines()]
     print('Part 1: {}'.format(find_trees(data, 3, 1)))
     print('part 2: {}'.format(reduce((lambda x, y: x * y), [find_trees(data, right, down) for right, down in
