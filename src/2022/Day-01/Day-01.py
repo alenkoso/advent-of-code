@@ -10,7 +10,7 @@ def part_one(data=DATA):
 print(part_one())
 
 # https://stackoverflow.com/questions/3766633/how-to-sort-with-lambda-in-python
-# I now have all mid sums, if I reverse that list, sorted by the sums, I get top 3 elves
+# I now have all mid-sums, if I reverse that list, sorted by the sums, I get top 3 elves
 DATA.sort(key=lambda x: sum(x), reverse=True)
 
 
