@@ -4,6 +4,15 @@
 
 My solutions for [Advent of Code](https://adventofcode.com/)
 
+![](https://img.shields.io/badge/2022%20⭐-12/50-blue) 
+![](https://img.shields.io/badge/2021%20⭐-50/50-green) 
+![](https://img.shields.io/badge/2020%20⭐-50/50-red) 
+![](https://img.shields.io/badge/2019%20⭐-0/50-purple) 
+![](https://img.shields.io/badge/2018%20⭐-0/50-brown) 
+![](https://img.shields.io/badge/2017%20⭐-0/50-orange)
+![](https://img.shields.io/badge/2016%20⭐-0/50-cyan)
+![](https://img.shields.io/badge/2015%20⭐-24/50-yellow)
+
 ## Intro
 
 I first "discovered" AOC in 2020, while browsing reddit. I scrolled over some comments and saw how amazing the whole community there is, which made me think even more why not join the whole subreddit and even participate in the challenges.
