@@ -1,11 +1,13 @@
 #!/usr/bin/python3
 from copy import deepcopy
+import time
+
+# DATA = open("test.txt").read()
 DATA = open("input.txt").read()
 lines = [x for x in DATA.split('\n')]
 
 
 solution = []
-commands = []
 for line in lines:
     if line != '':
         sz = (len(line)+1)//4
@@ -37,5 +39,14 @@ for command in lines:
         MOVE = ST[from_][:quantity]
         ST[from_] = ST[from_][quantity:]
         ST[to_] = (list(reversed(MOVE)) if do_rev else MOVE) + ST[to_]
-print('Part 1: ' + ''.join([s[0] for s in part_one if len(s) > 0]))
-print('Part 2: ' + ''.join([s[0] for s in part_two if len(s) > 0]))
+
+
+def main():
+    print('Part 1: ' + ''.join([s[0] for s in part_one if len(s) > 0]))
+    print('Part 2: ' + ''.join([s[0] for s in part_two if len(s) > 0]))
+
+
+if __name__ == "__main__":
+    start_time = time.time()
+    main()
+    print("--- %s seconds ---" % (time.time() - start_time))
