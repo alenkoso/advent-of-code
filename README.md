@@ -6,7 +6,7 @@ advent-of-code/
 ├── helpers/
 │   ├── grid_helpers.py
 │   ├── data_structures.py
-│   ├── parsing_utilities.py
+│   ├── parsing_utils.py
 │   ├── ...
 │── setup/
 │   ├── setup.py
