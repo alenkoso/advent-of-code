@@ -1,6 +1,6 @@
 import os
 import requests
-# from BeautifulSoup import bs4
+from BeautifulSoup import bs4
 from datetime import datetime
 import configparser
 
@@ -96,9 +96,9 @@ def setup_day_challenge(current_day, current_year, session_cookie):
         print(f"Input for Day {current_day}, Year {current_year} saved to {day_dir}/input.txt")
 
         # Fetch and save instructions
-        # instructions = fetch_instructions(current_day, current_year)
-        # save_instructions(instructions, day_dir)
-        # print(f"Instructions for Day {current_day}, Year {current_year} saved to {day_dir}/instructions.txt")
+        instructions = fetch_instructions(current_day, current_year)
+        save_instructions(instructions, day_dir)
+        print(f"Instructions for Day {current_day}, Year {current_year} saved to {day_dir}/instructions.txt")
 
         # Create base Python file
         create_base_python_file(current_day, day_dir)
