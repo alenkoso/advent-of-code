@@ -67,20 +67,20 @@ def save_instructions(instructions, dir_name):
         file.write(instructions)
 
 def create_base_python_file(day, dir_name):
-    ### Create a base Python file for the given day with links to input, instructions, and helper imports. ###
+    ### Create a base Python file for the given day with preloaded inputs and helper imports. ###
     file_path = os.path.join(dir_name, f"{day}.py")
+    input_file_path = os.path.join('..', '..', 'input.txt')  # Relative path to input.txt
+
     with open(file_path, 'w') as file:
         file.write("# Advent of Code\n")
         file.write(f"# Day {day}\n")
-        file.write(f"# See instructions: {os.path.join('..', '..', 'instructions.txt')}\n")
-        file.write(f"# See input data: {os.path.join('..', '..', 'input.txt')}\n\n")
+        file.write(f"# See instructions: {os.path.join('..', '..', 'instructions.txt')}\n\n")
         file.write("import sys\n")
         file.write("import os\n")
-        file.write("sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))\n\n")
-        file.write("from helpers.grid_helpers import *\n")
-        file.write("from helpers.data_structures import *\n")
-        file.write("from helpers.parsing_utils import *\n\n")
+        file.write("sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))\n")
+        file.write("from helpers.parsing_utils import read_input_file\n\n")
         file.write("def main():\n")
+        file.write(f"    input_lines = read_input_file('{input_file_path}')\n")
         file.write("    # Your code here\n\n")
         file.write("if __name__ == '__main__':\n")
         file.write("    main()\n")
