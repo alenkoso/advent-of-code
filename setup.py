@@ -65,23 +65,31 @@ def save_instructions(instructions, dir_name):
     with open(os.path.join(dir_name, "instructions.txt"), 'w') as file:
         file.write(instructions)
 
-def main():
-    SESSION_COOKIE = get_session_cookie()
+def setup_day_challenge(current_day, current_year, session_cookie):
+    """Set up the directory and files for the current day's challenge."""
+    day_dir = create_directory(current_year, current_day)
+
+    try:
+        # Fetch and save inputs
+        input_data = fetch_input(current_day, current_year, session_cookie)
+        save_input(input_data, day_dir)
+        print(f"Input for Day {current_day}, Year {current_year} saved to {day_dir}/input.txt")
+
+        # Fetch and save instructions
+        instructions = fetch_instructions(current_day, current_year)
+        save_instructions(instructions, day_dir)
+        print(f"Instructions for Day {current_day}, Year {current_year} saved to {day_dir}/instructions.txt")
     
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+def main():
+    session_cookie = get_session_cookie()
     current_day = datetime.now().day
     current_year = datetime.now().year
+
     print(f"Setting up for Day {current_day} of the year {current_year}...")
-
-    # Fetch and save inputs
-    day_dir = create_directory(current_year, current_day)
-    input_data = fetch_input(current_day, current_year, SESSION_COOKIE)
-    save_input(input_data, day_dir)
-    print(f"Day {current_day} for year {current_year} setup complete. Input saved to {day_dir}/input.txt")
-
-    # Fetch and save instructions
-    instructions = fetch_instructions(current_day, current_year)
-    save_instructions(instructions, day_dir)
-    print(f"Instructions for Day {current_day} of year {current_year} saved to {day_dir}/instructions.txt")
+    setup_day_challenge(current_day, current_year, session_cookie)
 
 if __name__ == "__main__":
     main()
