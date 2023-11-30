@@ -1,0 +1,23 @@
+## Project Structure
+
+```bash
+advent-of-code/
+│
+├── helpers/
+│   ├── grid_helpers.py
+│   ├── data_structures.py
+│   ├── parsing_utilities.py
+│   ├── ...
+│── setup/
+│   ├── setup.py
+│   ├── SETUP_README.md
+│── src/
+│   ├── 2015/...
+│   ├── 2020/...
+│   ├── 2021/...
+│   ├── 2022/...
+│   ├── 2023/...
+│── images/...
+└── ABOUT.md
+└── README.md
+```
