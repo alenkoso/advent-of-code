@@ -1,5 +1,6 @@
 import os
 import requests
+from BeautifulSoup import bs4
 from datetime import datetime
 import configparser
 
@@ -41,6 +42,29 @@ def save_input(input_data, dir_name):
     with open(os.path.join(dir_name, "input.txt"), 'w') as file:
         file.write(input_data)
 
+def fetch_instructions(day, year):
+    """Fetch the puzzle instructions for the given day and year."""
+    url = f"https://adventofcode.com/{year}/day/{day}"
+    response = requests.get(url)
+    response.raise_for_status()  # Ensure the request was successful
+
+    # Use BeautifulSoup to parse the HTML content
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # Assuming the instructions are contained in an <article> tag
+    # Modify this as per the actual structure of the webpage
+    article = soup.find('article')
+    if article:
+        return article.get_text(strip=True)
+    else:
+        return "Instructions not found."
+
+def save_instructions(instructions, dir_name):
+    """Save the instructions to a text file."""
+    with open(os.path.join(dir_name, "instructions.txt"), 'w') as file:
+        file.write(instructions)
+
+
 def main():
     SESSION_COOKIE = get_session_cookie()
     
@@ -48,10 +72,16 @@ def main():
     current_year = datetime.now().year
     print(f"Setting up for Day {current_day} of the year {current_year}...")
 
+    # Fetch and save inputs
     day_dir = create_directory(current_year, current_day)
     input_data = fetch_input(current_day, current_year, SESSION_COOKIE)
     save_input(input_data, day_dir)
-    print(f"Day {current_day} for year {current_year} setup complete. Input saved to src/{day_dir}/input.txt")
+    print(f"Day {current_day} for year {current_year} setup complete. Input saved to {day_dir}/input.txt")
+
+    # Fetch and save instructions
+    instructions = fetch_instructions(current_day, current_year)
+    save_instructions(instructions, day_dir)
+    print(f"Instructions for Day {current_day} of year {current_year} saved to {day_dir}/instructions.txt")
 
 if __name__ == "__main__":
     main()
