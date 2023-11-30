@@ -65,8 +65,21 @@ def save_instructions(instructions, dir_name):
     with open(os.path.join(dir_name, "instructions.txt"), 'w') as file:
         file.write(instructions)
 
+def create_base_python_file(day, dir_name):
+    # Create a base Python file for the given day with links to input and instructions.
+    file_path = os.path.join(dir_name, f"{day}.py")
+    with open(file_path, 'w') as file:
+        file.write("# Advent of Code\n")
+        file.write(f"# Day {day}\n")
+        file.write(f"# See instructions: {os.path.join(dir_name, 'instructions.txt')}\n")
+        file.write(f"# See input data: {os.path.join(dir_name, 'input.txt')}\n\n")
+        file.write("def main():\n")
+        file.write("    # Your code here\n\n")
+        file.write("if __name__ == '__main__':\n")
+        file.write("    main()\n")
+
 def setup_day_challenge(current_day, current_year, session_cookie):
-    """Set up the directory and files for the current day's challenge."""
+    # Set up the directory and files for the current day's challenge.
     day_dir = create_directory(current_year, current_day)
 
     try:
@@ -75,10 +88,14 @@ def setup_day_challenge(current_day, current_year, session_cookie):
         save_input(input_data, day_dir)
         print(f"Input for Day {current_day}, Year {current_year} saved to {day_dir}/input.txt")
 
-        # Fetch and save instructions
+        # # Fetch and save instructions
         instructions = fetch_instructions(current_day, current_year)
         save_instructions(instructions, day_dir)
         print(f"Instructions for Day {current_day}, Year {current_year} saved to {day_dir}/instructions.txt")
+
+        # Create base Python file
+        create_base_python_file(current_day, day_dir)
+        print(f"Base Python file for Day {current_day} created at {day_dir}/{current_day}.py")
     
     except Exception as e:
         print(f"An error occurred: {e}")
