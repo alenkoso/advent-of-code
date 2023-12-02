@@ -4,7 +4,7 @@ import os
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
-from helpers.parsing_utils import read_input_file
+from helpers.file_utils import read_input_file
 
 def parse_data(line):
     game_id = int(re.search(r'Game (\d+):', line).group(1))
@@ -30,7 +30,7 @@ def calculate_game_stats(lines):
 
 def main():
     input_file = 'input.txt'
-    lines = read_input_file(input_file)
+    lines = read_input_file(input_file, mode='lines_stripped')
     total_sum, total_power_sum = calculate_game_stats(lines)
     
     print(f"Part 1: {total_sum}")
