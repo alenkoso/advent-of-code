@@ -1,10 +1,10 @@
 import sys
 import os
 from collections import defaultdict
+from helpers.file_utils import read_input_file
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
-from helpers.file_utils import read_input_file
 
 def calculate_points(scratchcards):
     total_points = 0
