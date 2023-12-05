@@ -4,6 +4,7 @@
 
 My solutions for [Advent of Code](https://adventofcode.com/)
 
+![](https://img.shields.io/badge/2023%20⭐-10/50-pink) 
 ![](https://img.shields.io/badge/2022%20⭐-50/50-blue) 
 ![](https://img.shields.io/badge/2021%20⭐-50/50-green) 
 ![](https://img.shields.io/badge/2020%20⭐-50/50-red) 
