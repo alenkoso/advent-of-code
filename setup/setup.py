@@ -1,6 +1,6 @@
 import os
 import requests
-from BeautifulSoup import bs4
+# from BeautifulSoup import bs4
 from datetime import datetime
 import configparser
 
@@ -53,18 +53,18 @@ def save_input(input_data, dir_name):
     with open(os.path.join(dir_name, "input.txt"), 'w') as file:
         file.write(input_data)
 
-def fetch_instructions(day, year):
-    ### Fetch the puzzle instructions for the given day and year. ###
-    url = generate_aoc_url(year, day)
-    response = make_request(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    article = soup.find('article')
-    return article.get_text(strip=True) if article else "Instructions not found."
+# def fetch_instructions(day, year):
+#     ### Fetch the puzzle instructions for the given day and year. ###
+#     url = generate_aoc_url(year, day)
+#     response = make_request(url)
+#     soup = BeautifulSoup(response.text, 'html.parser')
+#     article = soup.find('article')
+#     return article.get_text(strip=True) if article else "Instructions not found."
 
-def save_instructions(instructions, dir_name):
-    ### Save the instructions to a text file. ###
-    with open(os.path.join(dir_name, "instructions.txt"), 'w') as file:
-        file.write(instructions)
+# def save_instructions(instructions, dir_name):
+#     ### Save the instructions to a text file. ###
+#     with open(os.path.join(dir_name, "instructions.txt"), 'w') as file:
+#         file.write(instructions)
 
 def create_base_python_file(day, dir_name):
     ### Create a base Python file for the given day with preloaded inputs and helper imports. ###
@@ -74,14 +74,28 @@ def create_base_python_file(day, dir_name):
     with open(file_path, 'w') as file:
         file.write("# Advent of Code\n")
         file.write(f"# Day {day}\n")
-        file.write(f"# See instructions: {os.path.join('..', '..', 'instructions.txt')}\n\n")
+        # file.write(f"# See instructions: {os.path.join('..', '..', 'instructions.txt')}\n\n")
         file.write("import sys\n")
         file.write("import os\n")
-        file.write("sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))\n")
-        file.write("from helpers.parsing_utils import read_input_file\n\n")
+        file.write("project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..'))\n")
+        file.write("sys.path.append(project_root))\n")
+        file.write("from helpers.file_utils import read_input_file\n\n")
         file.write("def main():\n")
-        file.write(f"    input_lines = read_input_file('{input_file_path}')\n")
+        file.write(f"    input_data = read_input_file('{input_file_path}', mode='lines_stripped')\n")
         file.write("    # Your code here\n\n")
+        file.write("# Part 1\n")
+        file.write("start_time = time.time()  # Start time \n")
+        file.write("\n\n\n")
+        file.write("end_time = time.time()  # End time\n")
+        file.write("print(Part 1: )\n")
+        file.write("print(Part 1 Execution Time: {end_time - start_time} seconds\n")
+        file.write("\n\n\n")
+        file.write("# Part 2\n")
+        file.write("start_time = time.time()  # Start time \n")
+        file.write("\n\n\n")
+        file.write("end_time = time.time()  # End time\n")
+        file.write("print(Part 2: )\n")
+        file.write("print(Part 2 Execution Time: {end_time - start_time} seconds\n")
         file.write("if __name__ == '__main__':\n")
         file.write("    main()\n")
 
@@ -96,9 +110,9 @@ def setup_day_challenge(current_day, current_year, session_cookie):
         print(f"Input for Day {current_day}, Year {current_year} saved to {day_dir}/input.txt")
 
         # Fetch and save instructions
-        instructions = fetch_instructions(current_day, current_year)
-        save_instructions(instructions, day_dir)
-        print(f"Instructions for Day {current_day}, Year {current_year} saved to {day_dir}/instructions.txt")
+        # instructions = fetch_instructions(current_day, current_year)
+        # save_instructions(instructions, day_dir)
+        # print(f"Instructions for Day {current_day}, Year {current_year} saved to {day_dir}/instructions.txt")
 
         # Create base Python file
         create_base_python_file(current_day, day_dir)
