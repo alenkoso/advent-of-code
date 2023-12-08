@@ -1,37 +1,59 @@
 import os
 import sys
-
+import itertools
+from math import lcm
+from collections import defaultdict
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
 from helpers.file_utils import read_input_file
+import time
 
 def parse_input(input_data):
     instructions = input_data[0]
-    node_mappings = {}
+    graph = {}
     for line in input_data[1:]:
-        if '=' in line:  # Ensure the line contains an equals sign
-            node, mapping = line.split(' = ')
+        if '=' in line:
+            parts = line.split(' = ')
+            node, mapping = parts[0], parts[1]
             left, right = mapping.strip('()').split(', ')
-            node_mappings[node] = (left, right)
-    return instructions, node_mappings
+            graph[node] = (left, right)
+    return instructions, graph
 
-def navigate_network(instructions, node_mappings):
-    current_node = 'AAA'
-    steps = 0
-
-    while current_node != 'ZZZ':
-        direction = instructions[steps % len(instructions)]
-        current_node = node_mappings[current_node][0 if direction == 'L' else 1]
-        steps += 1
-
-    return steps
+def find_steps_to_ZZZ(instructions, graph, part2=False):
+    if not part2:
+        curr = 'AAA'
+        for p1, rl in enumerate(itertools.cycle(instructions), 1):
+            curr = graph[curr][rl == 'R']
+            if curr == 'ZZZ':
+                return p1
+    else:
+        currs = [n for n in graph if n.endswith('A')]
+        cycles = [None] * len(currs)
+        for step, rl in enumerate(itertools.cycle(instructions), 1):
+            for c in range(len(currs)):
+                currs[c] = graph[currs[c]][rl == 'R']
+                if currs[c].endswith('Z'):
+                    cycles[c] = step
+            if all(cy for cy in cycles):
+                return lcm(*cycles)
 
 def main():
-    input_data = read_input_file('input.txt', mode='lines_stripped')
+    input_data = read_input_file("input.txt", mode='lines_stripped')
     instructions, node_mappings = parse_input(input_data)
-    steps_to_reach_ZZZ = navigate_network(instructions, node_mappings)
 
-    print(f"Steps required to reach ZZZ: {steps_to_reach_ZZZ}")
+    # Part 1
+    start_time = time.time()
+    steps_part1 = find_steps_to_ZZZ(instructions, node_mappings)
+    end_time = time.time()
+    print(f"Steps to reach ZZZ (Part 1): {steps_part1}")
+    print(f"Part 1 Execution Time: {end_time - start_time} seconds")
+
+    # Part 2
+    start_time = time.time()
+    steps_part2 = find_steps_to_ZZZ(instructions, node_mappings, part2=True)
+    end_time = time.time()
+    print(f"Steps to reach ZZZ (Part 2): {steps_part2}")
+    print(f"Part 2 Execution Time: {end_time - start_time} seconds")
 
 if __name__ == "__main__":
     main()
