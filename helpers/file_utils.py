@@ -1,7 +1,7 @@
 def read_input_file(file_path: str, mode: str = 'lines', number_type: str = 'int', delimiter: str = None) -> list:
     with open(file_path, 'r') as file:
         if mode == 'full':
-            return file.read()
+            return file.read().strip().split('\n\n')
         elif mode == 'lines_stripped':
             return [line.strip() for line in file]
         elif mode == 'lines_numbers':
