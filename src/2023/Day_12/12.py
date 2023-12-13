@@ -1,91 +1,69 @@
-#!/usr/bin/env python3
-
+import os
 import sys
 import time
 
-def unfold_row(row, unfold_times=5):
-    springs, block_sizes = row.split()
-    unfolded_springs = '?'.join([springs] * unfold_times)
-    unfolded_block_sizes = ','.join([block_sizes] * unfold_times)
-    return unfolded_springs, [int(x) for x in unfolded_block_sizes.split(',')]
+project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+sys.path.append(project_root)
+from helpers.file_utils import read_input_file
 
-def count_arrangements(springs, groups, index=0, group_index=0, current=0, memo=None):
-    key = (index, group_index, current)
-    
+def count_arrangements(dots, blocks, i=0, bi=0, current=0, memo=None):
     if memo is None:
         memo = {}
+    key = (i, bi, current)
 
-    # Check if the result is already computed
+    # Check if the current state is already computed
     if key in memo:
         return memo[key]
 
     # Base cases
-    if index == len(springs):
-        result = 1 if group_index == len(groups) and current == 0 else 0
-        memo[key] = result
-        print(f"Base case reached at end of springs: {key} -> {result}")
-        return result
-
-    if group_index == len(groups):
-        result = 1 if springs[index:].count('#') == 0 else 0
-        memo[key] = result
-        print(f"Base case reached at end of groups: {key} -> {result}")
-        return result
-
-    if springs[index] != '?':
-        if springs[index] == '#' and (group_index == 0 or groups[group_index - 1] == 0):
-            result = count_arrangements(springs, groups, index + 1, group_index + 1, 0, memo)
-            memo[key] = result
-            print(f"Non '?' char encountered, incremented group_index: {key} -> {result}")
-            return result
-        result = count_arrangements(springs, groups, index + 1, group_index, memo)
-        memo[key] = result
-        print(f"Non '?' char encountered, no increment: {key} -> {result}")
-        return result
-    
-    # Recursive case for '?'
-    count = 0
-    # Option 1: Current spring is operational
-    count += count_arrangements(springs, groups, index + 1, group_index, memo)
-    # Option 2: Current spring is damaged
-    if group_index == 0 or groups[group_index - 1] == 0:
-        count += count_arrangements(springs, [groups[0] - 1] + groups[1:], index + 1, group_index + 1, 0, memo)
-
-    memo[key] = count
-    print(f"Recursive case '?': {key} -> {count}")
-    return count
-
-def calculate_total_arrangements(filename, part2=False):
-    with open(filename, 'r') as file:
-        lines = file.readlines()
-
-    total_arrangements = 0
-    for line in lines:
-        line = line.strip()
-        if part2:
-            springs, blocks = unfold_row(line)
+    if i == len(dots):
+        if bi == len(blocks) and current == 0:
+            return 1
+        elif bi == len(blocks) - 1 and blocks[bi] == current:
+            return 1
         else:
-            springs, block_sizes = line.split()
-            blocks = [int(x) for x in block_sizes.split(',')]
+            return 0
 
-        memo = {}
-        arrangements = count_arrangements(springs, blocks, 0, 0, 0, memo)
-        total_arrangements += arrangements
+    # Recursive cases
+    ans = 0
+    for c in ['.', '#']:
+        if dots[i] == c or dots[i] == '?':
+            if c == '.':
+                if current == 0:
+                    ans += count_arrangements(dots, blocks, i + 1, bi, 0, memo)
+                elif current > 0 and bi < len(blocks) and blocks[bi] == current:
+                    ans += count_arrangements(dots, blocks, i + 1, bi + 1, 0, memo)
+            elif c == '#':
+                ans += count_arrangements(dots, blocks, i + 1, bi, current + 1, memo)
 
-    return total_arrangements
+    memo[key] = ans
+    return ans
+
+def process_line(line, part_two=False):
+    dots, blocks = line.split()
+    if part_two:
+        dots = '?'.join([dots] * 5)
+        blocks = ','.join([blocks] * 5)
+    blocks = [int(x) for x in blocks.split(',')]
+    return count_arrangements(dots, blocks)
 
 def main():
-    input_file = "input.txt"  # Replace with your input file
+    input_file = "input.txt"
+    lines = read_input_file(input_file, mode='lines_stripped')
 
+    # Part 1
     start_time = time.time()
-    part1_result = calculate_total_arrangements(input_file)
+    part1_result = sum(process_line(line) for line in lines)
     end_time = time.time()
-    print(f"Part 1: {part1_result}, Execution Time: {end_time - start_time:.2f} seconds")
+    print("Part 1 Result:", part1_result)
+    print(f"Part 1 Execution Time: {end_time - start_time} seconds")
 
+    # Part 2
     start_time = time.time()
-    part2_result = calculate_total_arrangements(input_file, part2=True)
+    part2_result = sum(process_line(line, part_two=True) for line in lines)
     end_time = time.time()
-    print(f"Part 2: {part2_result}, Execution Time: {end_time - start_time:.2f} seconds")
+    print("Part 2 Result:", part2_result)
+    print(f"Part 2 Execution Time: {end_time - start_time} seconds")
 
 if __name__ == "__main__":
     main()
