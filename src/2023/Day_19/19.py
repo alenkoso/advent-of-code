@@ -1,30 +1,44 @@
 import re
 
 def parse_workflows(workflow_lines):
-    workflows = {}
-    for line in workflow_lines:
-        name, rules_str = line.split("{")
-        rules_str = rules_str.strip("}")
-        rules = [tuple(rule.split(":")) if ":" in rule else (None, rule) for rule in rules_str.split(",")]
-        workflows[name] = rules
-    return workflows
+    return {line.split("{")[0]: line.split("{")[1][:-1] for line in workflow_lines}
 
 def parse_part(part_line):
-    ratings = re.findall(r'(\w)=(\d+)', part_line)
-    return {rating: int(value) for rating, value in ratings}
+    return list(map(int, re.findall(r'\d+', part_line)))
 
 def process_part(part, workflows, current_workflow):
-    for condition, destination in workflows[current_workflow]:
-        if destination == "A":
-            return sum(part.values())
-        if destination == "R":
-            return 0
-        if condition:
-            attribute, operator, value = re.match(r'(\w)([><]=?)(\d+)', condition).groups()
-            value = int(value)
-            if eval(f"part['{attribute}'] {operator}{value}"):
-                return process_part(part, workflows, destination)
-    return 0
+    w = workflows[current_workflow]
+    for it in w.split(","):
+        if it == "R":
+            return False
+        if it == "A":
+            return True
+        if ":" not in it:
+            return process_part(part, workflows, it)
+        cond, next_workflow = it.split(":")
+        if evaluate_condition(part, cond):
+            if next_workflow in ["R", "A"]:
+                return next_workflow == "A"
+            return process_part(part, workflows, next_workflow)
+    raise Exception(f"Invalid workflow configuration: {w}")
+
+def evaluate_condition(part, cond):
+    attribute, operator, value = re.match(r'(\w)([><]=?)(\d+)', cond).groups()
+    value = int(value)
+    part_value = part['xmas'.index(attribute)]
+    return compare_values(part_value, operator, value)
+
+def compare_values(part_value, operator, target_value):
+    if operator == '>':
+        return part_value > target_value
+    elif operator == '<':
+        return part_value < target_value
+    elif operator == '>=':
+        return part_value >= target_value
+    elif operator == '<=':
+        return part_value <= target_value
+    else:
+        raise ValueError(f"Invalid operator: {operator}")
 
 def main(file_path):
     with open(file_path, 'r') as file:
@@ -34,9 +48,9 @@ def main(file_path):
     workflows = parse_workflows(workflow_lines)
     parts = [parse_part(line) for line in part_lines]
 
-    total_sum = sum(process_part(part, workflows, 'in') for part in parts)
+    total_sum = sum(sum(part) for part in parts if process_part(part, workflows, 'in'))
     print(f"Total sum of ratings for accepted parts: {total_sum}")
 
 if __name__ == "__main__":
-    input_path = 'input.txt'  # Replace with your input file path
+    input_path = 'input.txt'
     main(input_path)
