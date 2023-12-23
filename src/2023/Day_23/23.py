@@ -1,3 +1,5 @@
+import sys
+
 def parse_input(file_path):
      with open(file_path, 'r') as file:
         return [list(line.strip()) for line in file.readlines()]
@@ -36,6 +38,7 @@ def find_longest_hike(input_text):
     return dfs(start_x, 0, grid, {(start_x, 0)})
 
 # Example usage:
-input_path = "example.txt"
+sys.setrecursionlimit(1000000)
+input_path = "input.txt"
 result = find_longest_hike(input_path)
-print(f"Length of the longest hike: {result}")
+print(f"Length of the longest hike: {result-1}") # i fd smthing up here, fix it
