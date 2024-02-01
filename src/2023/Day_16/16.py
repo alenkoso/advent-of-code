@@ -7,7 +7,7 @@ sys.setrecursionlimit(1000000)
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
-from helpers.file_utils import read_input_file
+from helpers.parsing_utils import read_input_file_strip_lines
 
 # Directions and Mirrors behavior mapping
 DIRECTIONS = {'L': (0, -1), 'R': (0, 1), 'U': (-1, 0), 'D': (1, 0)}
@@ -38,8 +38,7 @@ def energized_tile_count(grid_layout, start_pos):
 
 def main():
     start_time = time.time()
-    input_file = "input.txt"
-    grid_data = read_input_file(input_file, mode='lines_stripped')
+    grid_data = read_input_file_strip_lines("input.txt")
 
     # Calculate energized tiles
     part_one_result = energized_tile_count(grid_data, (0, 0, 'R'))
