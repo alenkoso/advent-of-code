@@ -1,0 +1,7 @@
+L
+
+AAA = (22A, AAA)
+22A = (33M, AAA)
+33M = (44Z, AAA)
+44Z = (ZZZ, AAA)
+ZZZ = (AAA, AAA)
