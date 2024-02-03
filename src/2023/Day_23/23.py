@@ -7,17 +7,17 @@ class SimpleDeque:
         self.items = []
 
     def append(self, item):
-        """Add an item to the right end of the deque."""
+        # Add an item to the right end of the deque.
         self.items.append(item)
 
     def popleft(self):
-        """Remove and return an item from the left end of the deque."""
+        # Remove and return an item from the left end of the deque.
         if self.is_empty():
             raise IndexError("pop from an empty deque")
         return self.items.pop(0)
 
     def is_empty(self):
-        """Check if the deque is empty."""
+        # Check if the deque is empty. 
         return len(self.items) == 0
 
 # Adjusting the import path for parsing_utils
