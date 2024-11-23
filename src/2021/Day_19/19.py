@@ -1,5 +1,6 @@
 from collections import deque
-from itertools import permutations
+from itertools import permutations, combinations
+import numpy as np
 
 def parse_input(filename="input.txt"):
     scanners = []
@@ -110,10 +111,25 @@ def solve_part1(scanners):
     
     return len(all_beacons), scanner_positions
 
+
+def manhattan_distance(p1, p2):
+    return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1]) + abs(p1[2] - p2[2])
+
+def solve_part2(scanner_positions):
+    max_dist = 0
+    for i, pos1 in enumerate(scanner_positions):
+        for pos2 in scanner_positions[i+1:]:
+            dist = manhattan_distance(pos1, pos2)
+            max_dist = max(max_dist, dist)
+    return max_dist
+
+
+
 def main():
     scanners = parse_input()
     result, scanner_positions = solve_part1(scanners)
     print(f"Part 1: {result}")
+    print(f"Part 2: {solve_part2(scanner_positions)}")
 
 if __name__ == "__main__":
     main()
