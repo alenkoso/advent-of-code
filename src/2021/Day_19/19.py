@@ -23,7 +23,7 @@ def parse_input(filename="input.txt"):
     return scanners
 
 def get_scanner_fingerprints(scanner):
-    """Get a unique fingerprint for a scanner based on distances between points"""
+    # Get a unique fingerprint for a scanner based on distances between points
     fingerprint = set()
     for i, p1 in enumerate(scanner):
         for p2 in scanner[i+1:]:
@@ -35,7 +35,7 @@ def get_scanner_fingerprints(scanner):
     return fingerprint
 
 def find_matching_pairs(scanners):
-    """Find pairs of scanners that might overlap"""
+    # Find pairs of scanners that might overlap
     n = len(scanners)
     fingerprints = [get_scanner_fingerprints(s) for s in scanners]
     pairs = []
@@ -48,7 +48,7 @@ def find_matching_pairs(scanners):
     return pairs
 
 def align_scanner(base_points, scanner):
-    """Try to align scanner with base_points"""
+    # Try to align scanner with base_points
     base_set = set(base_points)
     
     # Try all possible rotations
@@ -88,7 +88,7 @@ def solve_part1(scanners):
     pairs = find_matching_pairs(scanners)
     n = len(scanners)
     
-    # Start with scanner 0
+    # Start with scanner
     aligned = {0}
     all_beacons = set(scanners[0])
     scanner_positions = [(0,0,0)]

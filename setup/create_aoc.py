@@ -7,7 +7,7 @@ from pathlib import Path
 from datetime import datetime
 
 def create_aoc_project(year, day, packages=None):
-    """Create AoC project structure for specific day."""
+    # Create AoC project structure for specific day.
     if packages is None:
         packages = ['numpy', 'pandas']
         
