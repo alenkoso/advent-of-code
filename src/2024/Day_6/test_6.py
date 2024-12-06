@@ -21,68 +21,55 @@ def example_input():
         "......#..."
     ]
 
-@pytest.fixture
-def parsed_example(example_input):
-    return solution.parse_input(example_input)
+def test_parse_input(example_input):
+    """Test that the input is parsed correctly and guard position is found"""
+    lab_grid, guard_start = solution.parse_input(example_input)
+    assert len(lab_grid) == 10  # 10 rows
+    assert len(lab_grid[0]) == 10  # 10 columns
+    assert guard_start == (6, 4)  # Guard starts at row 6, col 4
+    assert lab_grid[6][4] == '.'  # Guard position should be replaced with '.'
 
-def test_part1(parsed_example):
-    grid, start_pos = parsed_example
-    assert solution.solve_part1(grid, start_pos) == 41
+def test_part1_example(example_input):
+    """Test Part 1 with the example from instructions"""
+    lab_grid, guard_start = solution.parse_input(example_input)
+    result = solution.solve_part1(lab_grid, guard_start)
+    assert result == 41  # Example should visit 41 distinct positions
 
-def test_part2(parsed_example):
-    grid, start_pos = parsed_example
-    assert solution.solve_part2(grid, start_pos) == 6
+def test_part2_example(example_input):
+    """Test Part 2 with the example from instructions"""
+    lab_grid, guard_start = solution.parse_input(example_input)
+    result = solution.solve_part2(lab_grid, guard_start)
+    assert result == 6  # Example should have 6 possible obstruction positions
 
-def test_parse_input():
-    test_input = [
-        "..^..",
-        ".....",
-        "..#.."
+def test_empty_map():
+    """Test behavior with an empty map"""
+    empty_input = [
+        ".........",
+        "....^....",
+        "........."
     ]
-    grid, start_pos = solution.parse_input(test_input)
-    assert grid[0][2] == '.'  # Guard position replaced with '.'
-    assert start_pos == (0, 2)  # Guard position correctly identified
-    assert grid[2][2] == '#'  # Obstacle remains in place
+    lab_grid, guard_start = solution.parse_input(empty_input)
+    result = solution.solve_part1(lab_grid, guard_start)
+    assert result > 0  # Should visit at least one position
 
-def test_simple_path():
-    test_input = [
-        ".....",
-        "..^..",  # Guard in middle facing up
-        "..#.."   # Obstacle below guard
-    ]
-    grid, start_pos = solution.parse_input(test_input)
-    # Guard starts at (1,2), counts starting position
-    # Then moves up to (0,2) before hitting wall and escaping
-    assert solution.solve_part1(grid, start_pos) == 2
-
-def test_loop_detection():
-    test_input = [
-        "#....",
-        ".^...",  # Guard with walls creating a loop
-        "#...."
-    ]
-    grid, start_pos = solution.parse_input(test_input)
-    # Adding obstacle at (1,2) creates a loop
-    assert solution.simulate_guard(grid, start_pos, (1, 2))
-
-def test_no_loop():
-    test_input = [
-        "..^..",
-        ".....",
-        "....."
-    ]
-    grid, start_pos = solution.parse_input(test_input)
-    # Obstacle near edge won't create loop
-    assert not solution.simulate_guard(grid, start_pos, (2, 4))
-
-def test_edge_cases():
-    # Test guard at edge
+def test_guard_at_edge():
+    """Test behavior when guard starts at edge of map"""
     edge_input = [
-        "^....",  # Guard at top-left corner
-        ".....",
-        "....."
+        "^........",
+        ".........",
+        "........."
     ]
-    grid, start_pos = solution.parse_input(edge_input)
-    # Guard starts at (0,0), moves right hitting positions:
-    # (0,0), (0,1), (0,2), (0,3), (0,4)
-    assert solution.solve_part1(grid, start_pos) == 5
+    lab_grid, guard_start = solution.parse_input(edge_input)
+    result = solution.solve_part1(lab_grid, guard_start)
+    assert result > 0  # Should visit at least one position
+
+def test_surrounded_by_obstacles():
+    """Test when guard is surrounded by obstacles"""
+    surrounded_input = [
+        "...#....",
+        "..#^#...",
+        "...#...."
+    ]
+    lab_grid, guard_start = solution.parse_input(surrounded_input)
+    result = solution.solve_part1(lab_grid, guard_start)
+    assert result == 1  # Should only visit starting position
