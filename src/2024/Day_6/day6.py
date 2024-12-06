@@ -89,6 +89,34 @@ def solve_part2(lab_grid, guard_start):
                     
     return loop_positions_count
 
+
+def simulate_guard_steps(lab_grid, guard_start):
+    """Helper function to return list of steps for debugging"""
+    row_count = len(lab_grid)
+    col_count = len(lab_grid[0])
+    direction_row = [-1, 0, 1, 0]  # Up, Right, Down, Left
+    direction_col = [0, 1, 0, -1]
+    
+    current_row, current_col = guard_start
+    current_direction = 0  # Start facing up
+    steps = [(current_row, current_col, current_direction)]
+    
+    while True:
+        next_row = current_row + direction_row[current_direction]
+        next_col = current_col + direction_col[current_direction]
+        
+        if not (0 <= next_row < row_count and 0 <= next_col < col_count):
+            break
+            
+        if lab_grid[next_row][next_col] == '#':
+            current_direction = (current_direction + 1) % 4
+            steps.append((current_row, current_col, current_direction))
+        else:
+            current_row, current_col = next_row, next_col
+            steps.append((current_row, current_col, current_direction))
+    
+    return steps
+
 def main():
     # Read input
     lines = read_input_file_strip_lines("input.txt")

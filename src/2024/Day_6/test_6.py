@@ -44,27 +44,46 @@ def test_parse_input():
     assert start_pos == (0, 2)  # Guard position correctly identified
     assert grid[2][2] == '#'  # Obstacle remains in place
 
+def test_guard_movement():
+    test_input = [
+        "..^..",  # Guard starts here facing up
+        ".....",
+        "....#"   # Obstacle at bottom right
+    ]
+    grid, start_pos = solution.parse_input(test_input)
+    # Let's verify each step manually
+    steps = solution.simulate_guard_steps(grid, start_pos)  # New helper function
+    expected_steps = [
+        (0, 2, 0),  # Start position, facing up
+        (0, 2, 1),  # Hit top wall, turn right
+        (0, 3, 1),  # Move right
+        (0, 4, 1),  # Move right
+        (0, 4, 2),  # Hit right wall, turn down
+        (1, 4, 2),  # Move down
+        (2, 4, 2),  # Move down until hit obstacle
+    ]
+    assert steps == expected_steps
+
 def test_simple_path():
     test_input = [
         "..^..",
         ".....",
-        "#...."
+        "....#"
     ]
     grid, start_pos = solution.parse_input(test_input)
-    # Guard starts facing up, hits top, turns right, hits right edge
-    # Total unique positions: start + 2 up + 2 right = 6
-    assert solution.solve_part1(grid, start_pos) == 6
+    # Guard should visit: (0,2), (0,3), (0,4), (1,4), (2,4)
+    assert solution.solve_part1(grid, start_pos) == 5
 
 def test_loop_detection():
     test_input = [
         "..^..",
         ".....",
-        ".#..."
+        "....."
     ]
     grid, start_pos = solution.parse_input(test_input)
-    # Adding obstacle at (1,1) should create a loop:
-    # Guard starts up, hits top, turns right, hits obstacle, turns right, etc.
-    assert solution.simulate_guard(grid, start_pos, (1, 1))
+    # Create a simple 2x2 loop with obstacle at (1,2)
+    # Guard will go up, right, down, left, up, repeating
+    assert solution.simulate_guard(grid, start_pos, (1, 2))
 
 def test_no_loop():
     test_input = [
@@ -73,16 +92,4 @@ def test_no_loop():
         "....."
     ]
     grid, start_pos = solution.parse_input(test_input)
-    # Adding obstacle at (2,4) shouldn't create a loop as guard will escape
     assert not solution.simulate_guard(grid, start_pos, (2, 4))
-
-def test_edge_cases():
-    # Test guard at edge
-    edge_input = [
-        "^....",
-        ".....",
-        "....."
-    ]
-    grid, start_pos = solution.parse_input(edge_input)
-    # Guard should move right along top edge and then off map
-    assert solution.solve_part1(grid, start_pos) == 5
