@@ -37,16 +37,20 @@ def simulate_guard(lab_grid, guard_start, obstacle_position=(-1, -1)):
             next_row = current_row + direction_row[current_direction]
             next_col = current_col + direction_col[current_direction]
             
-            # Check if guard leaves mapped area
+            # When hitting map edges or obstacles, turn right
+            if not (0 <= next_row < row_count and 0 <= next_col < col_count) or lab_grid[next_row][next_col] == '#':
+                current_direction = (current_direction + 1) % 4  # Turn right
+                continue  # Try new direction without moving
+            
+            # Move in current direction
+            current_row, current_col = next_row, next_col
+            visited_positions.add((current_row, current_col))
+            
+            # Only exit if we're about to step off the map
+            next_row = current_row + direction_row[current_direction]
+            next_col = current_col + direction_col[current_direction]
             if not (0 <= next_row < row_count and 0 <= next_col < col_count):
                 return len(visited_positions)
-                
-            # Check if there's an obstacle ahead
-            if lab_grid[next_row][next_col] == '#':
-                current_direction = (current_direction + 1) % 4  # Turn right
-            else:
-                current_row, current_col = next_row, next_col
-                visited_positions.add((current_row, current_col))
     else:  # Part 2 - look for loops with added obstacle
         obstacle_row, obstacle_col = obstacle_position
         steps_taken = 0
@@ -56,20 +60,29 @@ def simulate_guard(lab_grid, guard_start, obstacle_position=(-1, -1)):
             next_row = current_row + direction_row[current_direction]
             next_col = current_col + direction_col[current_direction]
             
-            # Check if guard leaves mapped area
+            # Hit wall, existing obstacle, or new obstacle - turn right
+            if (not (0 <= next_row < row_count and 0 <= next_col < col_count) or 
+                lab_grid[next_row][next_col] == '#' or 
+                (next_row == obstacle_row and next_col == obstacle_col)):
+                current_direction = (current_direction + 1) % 4
+                continue
+            
+            # Move in current direction
+            current_row, current_col = next_row, next_col
+            current_state = (current_row, current_col, current_direction)
+            
+            if current_state in visited_states:
+                return True  # Found a loop
+                
+            visited_states.add(current_state)
+            steps_taken += 1
+            
+            # Check if next step would leave map
+            next_row = current_row + direction_row[current_direction]
+            next_col = current_col + direction_col[current_direction]
             if not (0 <= next_row < row_count and 0 <= next_col < col_count):
                 return False
                 
-            # Check if there's an obstacle (including new one) ahead
-            if (next_row == obstacle_row and next_col == obstacle_col) or lab_grid[next_row][next_col] == '#':
-                current_direction = (current_direction + 1) % 4  # Turn right
-            else:
-                current_row, current_col = next_row, next_col
-                current_state = (current_row, current_col, current_direction)
-                if current_state in visited_states:
-                    return True  # Found a loop
-                visited_states.add(current_state)
-            steps_taken += 1
         return False  # Too many steps without finding a loop
 
 def solve_part1(lab_grid, guard_start):
