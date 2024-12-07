@@ -15,9 +15,8 @@ reactions, typeMapping = parse_reactions(lines)
 reactions = adjust_types(reactions, typeMapping)
 
 def least_common_multiple(numbers):
-    result = 1
     for number in numbers:
-    result = (result * number) // math.gcd(number, result)
+        result = (result * number) // math.gcd(number, result)
     return result
 
 typeMapping = {}

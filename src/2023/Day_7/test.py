@@ -12,11 +12,10 @@ def strength(hand, part2):
 
     C = Counter(hand)
     if part2:
-    target = list(C.keys())[0]
+        target = list(C.keys())[0]
     for k in C:
         if k!='1':
         if C[k] > C[target] or target=='1':
-            target = k
     assert target != '1' or list(C.keys()) == ['1']
     if '1' in C and target != '1':
         C[target] += C['1']

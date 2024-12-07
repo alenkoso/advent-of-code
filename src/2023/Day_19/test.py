@@ -17,6 +17,7 @@ def eval2(part, work):
     w = workflow[work]
     for it in w.split(","):
     if it == "R":
+        return False
     return False
     if it == "A":
     return True
@@ -62,7 +63,7 @@ def acceptance_ranges_outer(work):
 def acceptance_ranges_inner(w):
     it = w[0]
     if it == "R":
-    return []
+        return []
     if it == "A":
     return [((1, 4000), (1, 4000), (1, 4000), (1, 4000))]
     if ":" not in it:
