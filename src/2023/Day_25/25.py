@@ -19,26 +19,26 @@ def parse_wiring_diagram(lines):
         components.add(source)
         components.update(targets)
 
-    return components, connections
+        return components, connections
 
-components, connections = parse_wiring_diagram(read_input_file_strip_lines("input.txt"))
+    components, connections = parse_wiring_diagram(read_input_file_strip_lines("input.txt"))
 
-# Initialize a graph to represent the wiring diagram
-wiring_graph = igraph.Graph()
+    # Initialize a graph to represent the wiring diagram
+    wiring_graph = igraph.Graph()
 
-# Add vertices to the graph for each component
-for component in components:
-    wiring_graph.add_vertex(component)
+    # Add vertices to the graph for each component
+    for component in components:
+        wiring_graph.add_vertex(component)
 
-# Add edges to the graph for each connection between components
-for source, target in connections:
-    wiring_graph.add_edge(source, target)
+        # Add edges to the graph for each connection between components
+        for source, target in connections:
+            wiring_graph.add_edge(source, target)
 
-# Find the minimum cut that divides the graph into two separate groups
-min_cut = wiring_graph.mincut()
+            # Find the minimum cut that divides the graph into two separate groups
+            min_cut = wiring_graph.mincut()
 
-# Calculate the product of the sizes of the two groups
-group_size_product = len(min_cut.partition[0]) * len(min_cut.partition[1])
+            # Calculate the product of the sizes of the two groups
+            group_size_product = len(min_cut.partition[0]) * len(min_cut.partition[1])
 
-print("Part 1: ", group_size_product)
+            print("Part 1: ", group_size_product)
 

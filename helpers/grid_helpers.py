@@ -9,12 +9,12 @@ def print_grid(grid):
     for row in grid:
         print(' '.join(str(cell) for cell in row))
 
-def get_neighbors(r, c, grid):
-    ### Get valid neighbors for a cell in the grid. ###
-    neighbors = []
-    for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:  # Up, Down, Left, Right
-        nr, nc = r + dr, c + dc
-        if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]):
-            neighbors.append((nr, nc))
-    return neighbors
+        def get_neighbors(r, c, grid):
+            ### Get valid neighbors for a cell in the grid. ###
+            neighbors = []
+            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:  # Up, Down, Left, Right
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]):
+                neighbors.append((nr, nc))
+                return neighbors
 

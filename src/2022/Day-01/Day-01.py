@@ -1,22 +1,22 @@
 with open("input.txt") as f:
     DATA = [[int(calorie_amount) for calorie_amount in all_calorie_amounts.split("\n")] for
-            all_calorie_amounts in (f.read().strip().split("\n\n"))]
+    all_calorie_amounts in (f.read().strip().split("\n\n"))]
 
 
-def part_one(data=DATA):
-    return max(sum(val) for val in DATA)
+    def part_one(data=DATA):
+        return max(sum(val) for val in DATA)
 
 
-print(part_one())
+    print(part_one())
 
-# https://stackoverflow.com/questions/3766633/how-to-sort-with-lambda-in-python
-# I now have all mid-sums, if I reverse that list, sorted by the sums, I get top 3 elves
-DATA.sort(key=lambda x: sum(x), reverse=True)
-
-
-def part_two(data=DATA):
-    return sum(sum(val) for val in DATA[:3])
+    # https://stackoverflow.com/questions/3766633/how-to-sort-with-lambda-in-python
+    # I now have all mid-sums, if I reverse that list, sorted by the sums, I get top 3 elves
+    DATA.sort(key=lambda x: sum(x), reverse=True)
 
 
-print(part_two())
+    def part_two(data=DATA):
+        return sum(sum(val) for val in DATA[:3])
+
+
+    print(part_two())
 

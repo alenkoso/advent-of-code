@@ -35,6 +35,6 @@ def main():
     end_time = time.time()  # End time
     print(f"Part 2 Execution Time: {end_time - start_time} seconds")
 
-if __name__ == '__main__':
-    main()
+    if __name__ == '__main__':
+        main()
 

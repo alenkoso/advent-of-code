@@ -29,33 +29,33 @@ def process_grid(grid):
                             adjacent_char = grid[adjacent_row][adjacent_column]
                             if not adjacent_char.isdigit() and adjacent_char != '.':
                                 is_adjacent_to_symbol = True
-                            if adjacent_char == '*':
-                                adjacent_gear_positions.add((adjacent_row, adjacent_column))
-            elif current_number > 0:
-                for gear_position in adjacent_gear_positions:
-                    numbers_adjacent_to_gears[gear_position].append(current_number)
-                if is_adjacent_to_symbol:
-                    part1_total += current_number
-                current_number = 0
-                is_adjacent_to_symbol = False
-                adjacent_gear_positions = set()
+                                if adjacent_char == '*':
+                                    adjacent_gear_positions.add((adjacent_row, adjacent_column))
+                                elif current_number > 0:
+                                    for gear_position in adjacent_gear_positions:
+                                        numbers_adjacent_to_gears[gear_position].append(current_number)
+                                        if is_adjacent_to_symbol:
+                                            part1_total += current_number
+                                            current_number = 0
+                                            is_adjacent_to_symbol = False
+                                            adjacent_gear_positions = set()
 
-    # Part 2
-    part2_total = 0
-    for adjacent_numbers in numbers_adjacent_to_gears.values():
-        if len(adjacent_numbers) == 2:
-            part2_total += adjacent_numbers[0] * adjacent_numbers[1]
+                                            # Part 2
+                                            part2_total = 0
+                                            for adjacent_numbers in numbers_adjacent_to_gears.values():
+                                                if len(adjacent_numbers) == 2:
+                                                    part2_total += adjacent_numbers[0] * adjacent_numbers[1]
 
-    return part1_total, part2_total
+                                                    return part1_total, part2_total
 
-def main():
-    lines = read_input_file("input.txt", mode='lines_stripped')
-    grid = [[char for char in line] for line in lines]
+                                                def main():
+                                                    lines = read_input_file("input.txt", mode='lines_stripped')
+                                                    grid = [[char for char in line] for line in lines]
 
-    part1_total, part2_total = process_grid(grid)
-    print(f"Part 1: {part1_total}")
-    print(f"Part 2: {part2_total}")
+                                                    part1_total, part2_total = process_grid(grid)
+                                                    print(f"Part 1: {part1_total}")
+                                                    print(f"Part 2: {part2_total}")
 
-if __name__ == "__main__":
-    main()
+                                                    if __name__ == "__main__":
+                                                        main()
 

@@ -34,17 +34,17 @@ def solve(grid, part2):
                 if (rr, cc, new_dir, new_in_dir) not in visited:
                     heapq.heappush(queue, (heat_loss + cost, rr, cc, new_dir, new_in_dir))
 
-    # Find the minimum heat loss to the destination
-    return min(value for (r, c, _, in_dir), value in visited.items() if r == rows - 1 and c == cols - 1 and (in_dir >= 4 or not part2))
+                    # Find the minimum heat loss to the destination
+                    return min(value for (r, c, _, in_dir), value in visited.items() if r == rows - 1 and c == cols - 1 and (in_dir >= 4 or not part2))
 
-def main():
-    grid = read_input_file_to_grid("input.txt")
-    min_heat_loss_part1 = solve(grid, part2=False)
-    min_heat_loss_part2 = solve(grid, part2=True)
+                def main():
+                    grid = read_input_file_to_grid("input.txt")
+                    min_heat_loss_part1 = solve(grid, part2=False)
+                    min_heat_loss_part2 = solve(grid, part2=True)
 
-    print(f"Part 1 - Minimum Heat Loss: {min_heat_loss_part1}")
-    print(f"Part 2 - Minimum Heat Loss: {min_heat_loss_part2}")
+                    print(f"Part 1 - Minimum Heat Loss: {min_heat_loss_part1}")
+                    print(f"Part 2 - Minimum Heat Loss: {min_heat_loss_part2}")
 
-if __name__ == "__main__":
-    main()
+                    if __name__ == "__main__":
+                        main()
 

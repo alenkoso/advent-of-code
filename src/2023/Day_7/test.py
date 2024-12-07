@@ -13,41 +13,41 @@ def strength(hand, part2):
     C = Counter(hand)
     if part2:
         target = list(C.keys())[0]
-    for k in C:
-        if k!='1':
-        if C[k] > C[target] or target=='1':
-    assert target != '1' or list(C.keys()) == ['1']
-    if '1' in C and target != '1':
-        C[target] += C['1']
-        del C['1']
-    assert '1' not in C or list(C.keys()) == ['1'], f'{C} {hand}'
+        for k in C:
+            if k!='1':
+                if C[k] > C[target] or target=='1':
+                    assert target != '1' or list(C.keys()) == ['1']
+                    if '1' in C and target != '1':
+                        C[target] += C['1']
+                        del C['1']
+                        assert '1' not in C or list(C.keys()) == ['1'], f'{C} {hand}'
 
-    if sorted(C.values()) == [5]:
-    return (10, hand)
-    elif sorted(C.values()) == [1,4]:
-    return (9, hand)
-    elif sorted(C.values()) == [2,3]:
-    return (8, hand)
-    elif sorted(C.values()) == [1,1,3]:
-    return (7, hand)
-    elif sorted(C.values()) == [1,2,2]:
-    return (6, hand)
+                        if sorted(C.values()) == [5]:
+                            return (10, hand)
+                    elif sorted(C.values()) == [1,4]:
+                        return (9, hand)
+                elif sorted(C.values()) == [2,3]:
+                    return (8, hand)
+            elif sorted(C.values()) == [1,1,3]:
+                return (7, hand)
+        elif sorted(C.values()) == [1,2,2]:
+            return (6, hand)
     elif sorted(C.values()) == [1,1,1,2]:
-    return (5, hand)
-    elif sorted(C.values()) == [1,1,1,1,1]:
+        return (5, hand)
+elif sorted(C.values()) == [1,1,1,1,1]:
     return (4, hand)
-    else:
+else:
     assert False, f'{C} {hand} {sorted(C.values())}'
 
-for part2 in [False, True]:
-    H = []
-    for line in L:
-    hand,bid = line.split()
-    H.append((hand,bid))
-    H = sorted(H, key=lambda hb:strength(hb[0], part2))
-    ans = 0
-    for i,(h,b) in enumerate(H):
-    #print(i,h,b)
-    ans += (i+1)*int(b)
-    print(ans)
+    for part2 in [False, True]:
+        H = []
+        for line in L:
+            hand,bid = line.split()
+            H.append((hand,bid))
+            H = sorted(H, key=lambda hb:strength(hb[0], part2))
+            ans = 0
+            for i,(h,b) in enumerate(H):
+                #print(i,h,b)
+                ans += (i+1)*int(b)
+                print(ans)
 
