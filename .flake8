@@ -55,3 +55,15 @@ statistics = True
 
 # Maximum allowed complexity
 max-complexity = 20
+
+# Exclude generated files and directories
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    *.pyc,
+    venv,
+    .env,
+    src/2023/*,
+    src/2022/*

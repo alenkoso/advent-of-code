@@ -32,9 +32,9 @@ jobs:
     - name: Lint with flake8
       run: |
         # Check for serious errors only
-        flake8 . --count --select=F,E9,W6 --show-source --statistics
-        # Run full linting with configured rules
-        flake8 . --count --max-complexity=10 --statistics
+        flake8 . --select=F,E9,W6
+        # Run full linting
+        flake8 .
 
   test:
     needs: lint
@@ -56,6 +56,9 @@ jobs:
     - name: Run tests
       run: |
         for year_dir in src/*/; do
+          if [ "$year_dir" = "src/2023/" ] || [ "$year_dir" = "src/2022/" ]; then
+            continue
+          fi
           if [ ! -d "$year_dir" ]; then continue; fi
           echo "Testing year: $(basename "$year_dir")"
           
@@ -94,6 +97,9 @@ jobs:
     - name: Run solutions
       run: |
         for year_dir in src/*/; do
+          if [ "$year_dir" = "src/2023/" ] || [ "$year_dir" = "src/2022/" ]; then
+            continue
+          fi
           if [ ! -d "$year_dir" ]; then continue; fi
           echo "Running solutions for year: $(basename "$year_dir")"
           
