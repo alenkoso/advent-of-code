@@ -1,6 +1,7 @@
 import time
 
 
+
 def solve(number_of_chars):
     with open('input.txt') as f:
         DATA = f.read()
@@ -19,3 +20,4 @@ if __name__ == "__main__":
     start_time = time.time()
     main()
     print("--- %s seconds ---" % (time.time() - start_time))
+

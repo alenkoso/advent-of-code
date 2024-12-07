@@ -1,5 +1,6 @@
 from itertools import permutations
 
+
 def parse_input(filename="input.txt"):
     scanners = []
     current_scanner = []
@@ -52,7 +53,7 @@ def align_scanner(base_points, scanner):
     # Try all possible rotations
     for px, py, pz in permutations([0, 1, 2]):
         for sx, sy, sz in [(1,1,1), (1,1,-1), (1,-1,1), (1,-1,-1),
-                          (-1,1,1), (-1,1,-1), (-1,-1,1), (-1,-1,-1)]:
+                            (-1,1,1), (-1,1,-1), (-1,-1,1), (-1,-1,-1)]:
             # Create rotation function
             def rotate(p):
                 x = p[px] * sx
@@ -72,8 +73,8 @@ def align_scanner(base_points, scanner):
                     transformed = set()
                     for p in rotated:
                         transformed.add((p[0] + offset[0], 
-                                      p[1] + offset[1], 
-                                      p[2] + offset[2]))
+                                        p[1] + offset[1], 
+                                        p[2] + offset[2]))
                     
                     # Check for matches
                     matches = len(transformed & base_set)
@@ -131,3 +132,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

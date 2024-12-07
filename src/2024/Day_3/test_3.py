@@ -1,6 +1,7 @@
 import pytest
 import importlib.util
 
+
 # Import solution
 spec = importlib.util.spec_from_file_location("solution", "day3.py")
 solution = importlib.util.module_from_spec(spec)
@@ -48,3 +49,4 @@ def test_edge_cases():
     # Test conditional states
     assert solution.solve_part2("don't()mul(2,2)do()mul(3,3)") == 9
     assert solution.solve_part2("mul(2,2)don't()mul(3,3)") == 4
+

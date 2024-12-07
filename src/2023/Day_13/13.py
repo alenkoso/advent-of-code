@@ -1,10 +1,11 @@
 import os
 import sys
 import time
+from helpers.file_utils import read_input_file
+
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
-from helpers.file_utils import read_input_file
 
 def check_vertical_symmetry(pattern, part_two):
     ### Checks for vertical symmetry in the pattern. ###

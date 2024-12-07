@@ -1,6 +1,7 @@
 import pytest
 import importlib.util
 
+
 # Import solution
 spec = importlib.util.spec_from_file_location("solution", "day4.py")
 solution = importlib.util.module_from_spec(spec)
@@ -67,3 +68,4 @@ def test_directions():
     # Test horizontal XMAS
     horizontal = ["XMAS"]
     assert solution.solve_part1(solution.parse_input(horizontal)) == 1
+

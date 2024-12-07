@@ -1,12 +1,13 @@
 import os
 import sys
 import heapq
+from helpers.parsing_utils import read_input_file_to_grid
+
 
 # Append the project root to sys.path to enable importing from the 'helpers' module
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
 
-from helpers.parsing_utils import read_input_file_to_grid
 
 def solve(grid, part2):
     rows, cols = len(grid), len(grid[0])
@@ -46,3 +47,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

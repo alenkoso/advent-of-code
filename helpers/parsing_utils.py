@@ -41,3 +41,4 @@ def adjust_types(reactions, typeMapping):
     for src, dests in reactions.items():
         reactions[src] = [typeMapping.get(dest[1:], dest[0]) + dest if dest[1:] in typeMapping else dest for dest in dests]
     return reactions
+

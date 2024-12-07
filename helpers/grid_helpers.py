@@ -17,3 +17,4 @@ def get_neighbors(r, c, grid):
         if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]):
             neighbors.append((nr, nc))
     return neighbors
+

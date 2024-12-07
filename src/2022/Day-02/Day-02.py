@@ -48,3 +48,4 @@ def solve(pairing_sums, score_dict):
 
 print(solve(PART_ONE_PAIRING_SUMS, PART_ONE_SCORE_DICT))
 print(solve(PART_TWO_PAIRING_SUMS, PART_TWO_SCORE_DICT))
+

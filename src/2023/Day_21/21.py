@@ -1,11 +1,12 @@
 from collections import deque
 import os
 import sys
+from helpers.parsing_utils import read_input_file_to_grid
+
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
 
-from helpers.parsing_utils import read_input_file_to_grid
 
 def find_start_position(grid):
     # Finds the start position marked as 'S' in the grid.
@@ -67,3 +68,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

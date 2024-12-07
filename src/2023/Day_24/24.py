@@ -2,6 +2,7 @@ import os
 import sys
 from sympy import symbols, solve_poly_system
 
+
 # Adjusting the import path for parsing_utils
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
@@ -66,3 +67,4 @@ for idx, (px, py, pz, vx_h, vy_h, vz_h) in enumerate(hailstones[:3]):
 # Solve the system of equations
 result = solve_poly_system(equations, x, y, z, vx, vy, vz, *symbols(f't0:{len(hailstones[:3])}'))
 print(f"Part 2: Sum of initial position coordinates: {sum(result[0][:3])}")
+

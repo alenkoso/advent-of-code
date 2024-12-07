@@ -1,11 +1,12 @@
 import os
 import sys
 import igraph
+from helpers.parsing_utils import read_input_file_strip_lines
+
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
 
-from helpers.parsing_utils import read_input_file_strip_lines
 
 def parse_wiring_diagram(lines):
     connections = []
@@ -40,3 +41,4 @@ min_cut = wiring_graph.mincut()
 group_size_product = len(min_cut.partition[0]) * len(min_cut.partition[1])
 
 print("Part 1: ", group_size_product)
+

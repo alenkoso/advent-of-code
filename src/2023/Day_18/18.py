@@ -1,13 +1,14 @@
 import os
 import sys
 from dataclasses import dataclass
+from helpers.parsing_utils import read_input_file_strip_lines
+
 
 # this doesn't work, fix it + find the temp solution you had.
 # Append the project root to sys.path to enable importing from the 'helpers' module
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
 
-from helpers.parsing_utils import read_input_file_strip_lines
 
 @dataclass
 class Instruction:
@@ -65,3 +66,4 @@ def main(input_file):
 if __name__ == "__main__":
     input_file = "input.txt"
     main(input_file)
+

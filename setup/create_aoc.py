@@ -1,10 +1,11 @@
-#!/usr/bin/env python3
 import os
 import sys
 import subprocess
 import argparse
 from pathlib import Path
 from datetime import datetime
+
+#!/usr/bin/env python3
 
 def create_aoc_project(year, day, packages=None):
     # Create AoC project structure for specific day.
@@ -92,3 +93,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

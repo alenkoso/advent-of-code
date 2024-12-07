@@ -1,5 +1,6 @@
 import re
 
+
 def parse_workflows(workflow_lines):
     return {line.split("{")[0]: line.split("{")[1][:-1] for line in workflow_lines}
 
@@ -54,3 +55,4 @@ def main(file_path):
 if __name__ == "__main__":
     input_path = 'input.txt'
     main(input_path)
+

@@ -1,10 +1,11 @@
 import os
 import sys
 import time
+from helpers.file_utils import read_input_file
+
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
-from helpers.file_utils import read_input_file
 
 def count_arrangements(dots, blocks, i=0, bi=0, current=0, memo=None):
     if memo is None:
@@ -67,3 +68,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

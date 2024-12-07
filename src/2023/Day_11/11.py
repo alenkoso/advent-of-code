@@ -1,9 +1,10 @@
 import os
 import sys
+from helpers.grid_helpers import Grid
+
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
-from helpers.grid_helpers import Grid
 
 def find_galaxies(grid):
     galaxies = []
@@ -36,3 +37,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

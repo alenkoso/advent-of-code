@@ -1,6 +1,7 @@
-#!/usr/bin/python3
 from copy import deepcopy
 import time
+
+#!/usr/bin/python3
 
 # DATA = open("test.txt").read()
 DATA = open("input.txt").read()
@@ -50,3 +51,4 @@ if __name__ == "__main__":
     start_time = time.time()
     main()
     print("--- %s seconds ---" % (time.time() - start_time))
+

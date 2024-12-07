@@ -1,6 +1,7 @@
 import pytest
 import importlib.util
 
+
 # Import solution
 spec = importlib.util.spec_from_file_location("solution", "day7.py")
 solution = importlib.util.module_from_spec(spec)
@@ -54,3 +55,4 @@ def test_solve_equation_part2():
     # Part 1 cases should still work
     assert solution.solve_equation([10, 19], 190, True) == True
     assert solution.solve_equation([81, 40, 27], 3267, True) == True
+

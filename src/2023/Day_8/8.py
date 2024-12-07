@@ -2,10 +2,11 @@ import os
 import sys
 import itertools
 from math import lcm
-project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
-sys.path.append(project_root)
 from helpers.file_utils import read_input_file
 import time
+
+project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+sys.path.append(project_root)
 
 def parse_input(input_data):
     instructions = input_data[0]
@@ -56,3 +57,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

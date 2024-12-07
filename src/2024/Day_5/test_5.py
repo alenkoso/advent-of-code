@@ -1,6 +1,7 @@
 import pytest
 import importlib.util
 
+
 # Import solution
 spec = importlib.util.spec_from_file_location("solution", "day5.py")
 solution = importlib.util.module_from_spec(spec)
@@ -106,3 +107,4 @@ def test_example_reorderings(parsed_example):
     assert solution.topological_sort([75, 97, 47, 61, 53], rules) == [97, 75, 47, 61, 53]
     assert solution.topological_sort([61, 13, 29], rules) == [61, 29, 13]
     assert solution.topological_sort([97, 13, 75, 29, 47], rules) == [97, 75, 47, 29, 13]
+

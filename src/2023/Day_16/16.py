@@ -1,13 +1,14 @@
 import os
 import sys
 import time
+from helpers.parsing_utils import read_input_file_strip_lines
+
 
 # limit for deep recursion
 sys.setrecursionlimit(1000000)
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
-from helpers.parsing_utils import read_input_file_strip_lines
 
 # Directions and Mirrors behavior mapping
 DIRECTIONS = {'L': (0, -1), 'R': (0, 1), 'U': (-1, 0), 'D': (1, 0)}
@@ -49,9 +50,9 @@ def main():
     # Evaluate different entry points for Part Two
     start_time = time.time()
     entry_tests = [(x, 0, 'R') for x in range(len(grid_data))] + \
-                  [(x, len(grid_data[0]) - 1, 'L') for x in range(len(grid_data))] + \
-                  [(0, y, 'D') for y in range(len(grid_data[0]))] + \
-                  [(len(grid_data) - 1, y, 'U') for y in range(len(grid_data[0]))]
+                    [(x, len(grid_data[0]) - 1, 'L') for x in range(len(grid_data))] + \
+                    [(0, y, 'D') for y in range(len(grid_data[0]))] + \
+                    [(len(grid_data) - 1, y, 'U') for y in range(len(grid_data[0]))]
 
     part_two_result = max(energized_tile_count(grid_data, test) for test in entry_tests)
     print(f"Part Two Result: {part_two_result}")
@@ -60,3 +61,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

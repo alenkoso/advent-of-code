@@ -1,6 +1,8 @@
 import os
 import sys
 from collections import defaultdict
+from helpers.parsing_utils import read_input_file_to_grid
+
 
 class SimpleDeque:
     def __init__(self):
@@ -23,7 +25,6 @@ class SimpleDeque:
 # Adjusting the import path for parsing_utils
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
-from helpers.parsing_utils import read_input_file_to_grid
 
 grid = read_input_file_to_grid("input.txt")
 row_count = len(grid)
@@ -89,3 +90,4 @@ def solve_maze():
     return max_distance
 
 print(f"Max Distance: {solve_maze()}")
+

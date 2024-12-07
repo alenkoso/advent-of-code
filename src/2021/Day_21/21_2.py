@@ -1,6 +1,7 @@
 from collections import defaultdict
 from itertools import product
 
+
 def parse_input(filename="input.txt"):
     with open(filename) as f:
         lines = f.readlines()
@@ -66,3 +67,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -10,3 +10,4 @@ def read_input_file(file_path: str, mode: str = 'lines', number_type: str = 'int
             return [line.strip().split(delimiter) for line in file]
         else:  # default to reading lines (./parsing_utils/read_input_file())
             return file.readlines()
+

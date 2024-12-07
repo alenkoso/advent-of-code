@@ -1,11 +1,12 @@
 import os
 import sys
 import time
+from helpers.parsing_utils import read_input_file_strip_lines
+
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
 
-from helpers.parsing_utils import read_input_file_strip_lines
 
 def parse_input(lines):
     lab_grid = [list(line) for line in lines]
@@ -151,3 +152,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

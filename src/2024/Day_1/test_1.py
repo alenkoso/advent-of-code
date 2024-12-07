@@ -1,6 +1,7 @@
 import pytest
 from day1 import parse_input, solve_part1, solve_part2
 
+
 @pytest.fixture
 def example_input():
     # Example input from problem description
@@ -45,3 +46,4 @@ def test_single_pair():
     left_list, right_list = parse_input(["1   2"])
     assert solve_part1(left_list, right_list) == 1
     assert solve_part2(left_list, right_list) == 0
+

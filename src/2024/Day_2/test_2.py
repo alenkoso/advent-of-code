@@ -1,6 +1,7 @@
 import pytest
 import importlib.util
 
+
 # Import solution
 spec = importlib.util.spec_from_file_location("solution", "day2.py")
 solution = importlib.util.module_from_spec(spec)
@@ -38,3 +39,4 @@ def test_sequence_validation():
     assert not solution.is_sequence_valid([1, 2, 7, 8, 9])  # Invalid jump
     assert not solution.is_sequence_valid([1, 3, 2, 4, 5])  # Mixed direction
     assert not solution.is_sequence_valid([8, 6, 4, 4, 1])  # No change
+

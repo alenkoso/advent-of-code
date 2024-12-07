@@ -1,6 +1,7 @@
 import pytest
 import importlib.util
 
+
 # Import solution
 spec = importlib.util.spec_from_file_location("solution", "day6.py")
 solution = importlib.util.module_from_spec(spec)
@@ -74,3 +75,4 @@ def test_constrained_movement():
     result = solution.solve_part1(lab_grid, guard_start)
     # Guard should be able to move right and then leave the map
     assert result > 1  # Should visit at least starting position and one more
+

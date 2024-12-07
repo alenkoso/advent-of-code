@@ -1,10 +1,11 @@
 import os
 import sys
 import time
+from helpers.file_utils import read_input_file
+
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
-from helpers.file_utils import read_input_file
 
 def read_input(file_path):
     with open(file_path, 'r') as file:
@@ -79,3 +80,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -1,11 +1,12 @@
 import os
 import sys
 import time
+from helpers.parsing_utils import read_input_file_strip_lines
+
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
 
-from helpers.parsing_utils import read_input_file_strip_lines
 
 def parse_input(lines):
     # Convert input into 2D grid
@@ -63,11 +64,11 @@ def count_xmas_patterns(grid):
             
             # Need an M and S in each diagonal
             if not ((grid[row-1][col-1] == 'M' and grid[row+1][col+1] == 'S') or
-                   (grid[row-1][col-1] == 'S' and grid[row+1][col+1] == 'M')):
+                    (grid[row-1][col-1] == 'S' and grid[row+1][col+1] == 'M')):
                 valid = False
                 
             if not ((grid[row-1][col+1] == 'M' and grid[row+1][col-1] == 'S') or
-                   (grid[row-1][col+1] == 'S' and grid[row+1][col-1] == 'M')):
+                    (grid[row-1][col+1] == 'S' and grid[row+1][col-1] == 'M')):
                 valid = False
                 
             if valid:
@@ -102,3 +103,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

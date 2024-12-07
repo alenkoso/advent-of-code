@@ -1,10 +1,11 @@
 import os
 import sys
 import time
+from helpers.file_utils import read_input_file
+
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
-from helpers.file_utils import read_input_file
 
 def calculate_ways_to_win(race_time, record_distance):
     ways_to_win = 0
@@ -44,3 +45,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

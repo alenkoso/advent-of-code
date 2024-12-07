@@ -2,6 +2,7 @@ import sys
 import os
 from helpers.parsing_utils import read_input_file
 
+
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
 
