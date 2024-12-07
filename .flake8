@@ -34,15 +34,17 @@ ignore =
     # Function complexity
     C901
 
-# Exclude generated files and directories
-exclude =
+# Exclude generated files, directories, and specific years
+exclude = 
     .git,
     __pycache__,
     build,
     dist,
     *.pyc,
     venv,
-    .env
+    .env,
+    src/2023/*,
+    src/2022/*
 
 # Count errors
 count = True
@@ -55,15 +57,3 @@ statistics = True
 
 # Maximum allowed complexity
 max-complexity = 20
-
-# Exclude generated files and directories
-exclude =
-    .git,
-    __pycache__,
-    build,
-    dist,
-    *.pyc,
-    venv,
-    .env,
-    src/2023/*,
-    src/2022/*
