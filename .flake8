@@ -1,19 +1,57 @@
 [flake8]
-ignore = 
-    # Allow imports not at top of file
-    E402,
-    # Single line between functions is fine
-    E302,E305,
-    # Allow blank lines with whitespace
-    W293,
-    # Allow missing newline at end of file
-    W292,
-    # Allow bare except
-    E722,
-    # Allow simpler boolean comparisons
-    E712
-    # allow empty f-strings
-    F541
-
+# Increase max line length 
 max-line-length = 180
-exclude = .git,__pycache__,build,dist
+
+# Ignore specific errors
+ignore =
+    # Block comments starting with multiple '#'
+    E266,
+    
+    # Missing blank lines
+    E302,E303,E305,E306,
+    
+    # Continuation line indentation
+    E126,E128,E129,
+    
+    # Missing whitespace
+    E225,E226,E231,
+    
+    # Trailing whitespace and blank lines
+    W291,W293,W391,
+    
+    # Multiple statements on one line
+    E701,
+    
+    # Ambiguous variable names
+    E741,
+    
+    # Indentation with tabs
+    W191,
+    
+    # Line breaks around binary operators
+    W503,W504,
+    
+    # Function complexity
+    C901
+
+# Exclude generated files and directories
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    *.pyc,
+    venv,
+    .env
+
+# Count errors
+count = True
+
+# Show source code generating the error
+show-source = True
+
+# Count the number of occurrences of each error
+statistics = True
+
+# Maximum allowed complexity
+max-complexity = 20
