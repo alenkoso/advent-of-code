@@ -1,7 +1,6 @@
 import os
 import sys
 import heapq
-from collections import defaultdict
 
 # Append the project root to sys.path to enable importing from the 'helpers' module
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')

@@ -14,7 +14,6 @@ workflow = {l.split("{")[0]: l.split("{")[1][:-1] for l in workflow.split("\n")}
 
 def eval2(part, work):
 	w = workflow[work]
-	x, m, a, s = part
 	for it in w.split(","):
 		if it == "R":
 			return False

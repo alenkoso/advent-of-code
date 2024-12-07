@@ -1,6 +1,4 @@
-import sys
-import re
-from collections import defaultdict, Counter
+from collections import Counter
 D = open("input.txt").read().strip()
 L = D.split('\n')
 

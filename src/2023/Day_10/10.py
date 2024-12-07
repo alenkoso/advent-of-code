@@ -11,7 +11,6 @@ def main():
     
     # Preprocess the input
     width = len(input_data[0])
-    height = len(input_data)
     data = ''.join(input_data)
 
     direction_map = {
