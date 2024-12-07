@@ -33,8 +33,8 @@ def test_part2(parsed_example):
 
 def test_sequence_validation():
     # Test individual cases
-    assert solution.is_sequence_valid([7, 6, 4, 2, 1]) == True  # Valid decreasing
-    assert solution.is_sequence_valid([1, 3, 6, 7, 9]) == True  # Valid increasing
-    assert solution.is_sequence_valid([1, 2, 7, 8, 9]) == False  # Invalid jump
-    assert solution.is_sequence_valid([1, 3, 2, 4, 5]) == False  # Mixed direction
-    assert solution.is_sequence_valid([8, 6, 4, 4, 1]) == False  # No change
+    assert solution.is_sequence_valid([7, 6, 4, 2, 1])  # Valid decreasing
+    assert solution.is_sequence_valid([1, 3, 6, 7, 9])  # Valid increasing
+    assert not solution.is_sequence_valid([1, 2, 7, 8, 9])  # Invalid jump
+    assert not solution.is_sequence_valid([1, 3, 2, 4, 5])  # Mixed direction
+    assert not solution.is_sequence_valid([8, 6, 4, 4, 1])  # No change

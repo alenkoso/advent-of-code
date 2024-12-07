@@ -1,10 +1,9 @@
 import sys
 import os
+from helpers.parsing_utils import read_input_file
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
-
-from helpers.parsing_utils import read_input_file
 
 def extract_digit_part1(line):
     first_digit = next((char for char in line if char.isdigit()), None)
