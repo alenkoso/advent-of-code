@@ -3,8 +3,14 @@ name: Advent of Code CI
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'src/2023/**'
+      - 'src/2022/**'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - 'src/2023/**'
+      - 'src/2022/**'
 
 jobs:
   lint:
