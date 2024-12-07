@@ -1,6 +1,4 @@
-from collections import deque
-from itertools import permutations, combinations
-import numpy as np
+from itertools import permutations
 
 def parse_input(filename="input.txt"):
     scanners = []

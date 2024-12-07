@@ -39,7 +39,7 @@ def solve_maze():
     for row in range(row_count):
         for col in range(col_count):
             neighbor_count = 0
-            for direction, delta_row, delta_col in [['^', -1, 0], ['v', 1, 0], ['<', 0, -1], ['>', 0, 1]]:
+            for delta_row, delta_col in [['^', -1, 0], ['v', 1, 0], ['<', 0, -1], ['>', 0, 1]]:
                 if (0 <= row + delta_row < row_count and 0 <= col + delta_col < col_count and grid[row + delta_row][col + delta_col] != '#'):
                     neighbor_count += 1
             if neighbor_count > 2 and grid[row][col] != '#':
@@ -52,7 +52,6 @@ def solve_maze():
             start_point = (0, col)
         if grid[row_count - 1][col] == '.':
             vertex_set.add((row_count - 1, col))
-            end_point = (row_count - 1, col)
 
     # Build edges
     for (vertex_row, vertex_col) in vertex_set:
@@ -67,7 +66,7 @@ def solve_maze():
             if (current_row, current_col) in vertex_set and (current_row, current_col) != (vertex_row, vertex_col):
                 edges[(vertex_row, vertex_col)].append(((current_row, current_col), distance))
                 continue
-            for direction, delta_row, delta_col in [['^', -1, 0], ['v', 1, 0], ['<', 0, -1], ['>', 0, 1]]:
+            for delta_row, delta_col in [['^', -1, 0], ['v', 1, 0], ['<', 0, -1], ['>', 0, 1]]:
                 if (0 <= current_row + delta_row < row_count and 0 <= current_col + delta_col < col_count and grid[current_row + delta_row][current_col + delta_col] != '#'):
                     queue.append((current_row + delta_row, current_col + delta_col, distance + 1))
 

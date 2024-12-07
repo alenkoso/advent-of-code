@@ -39,4 +39,4 @@ min_cut = wiring_graph.mincut()
 # Calculate the product of the sizes of the two groups
 group_size_product = len(min_cut.partition[0]) * len(min_cut.partition[1])
 
-print(f"Part 1: ", group_size_product)
+print("Part 1: ", group_size_product)
