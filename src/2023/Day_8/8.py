@@ -2,7 +2,6 @@ import os
 import sys
 import itertools
 from math import lcm
-from collections import defaultdict
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
 from helpers.file_utils import read_input_file

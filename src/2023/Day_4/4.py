@@ -1,6 +1,5 @@
 import sys
 import os
-from collections import defaultdict
 from helpers.file_utils import read_input_file
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
