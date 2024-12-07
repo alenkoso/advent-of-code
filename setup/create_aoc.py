@@ -23,7 +23,7 @@ def create_aoc_project(year, day, packages=None):
     # Create virtual environment if it doesn't exist
     venv_path = root_dir / 'venv'
     if not venv_path.exists():
-        print(f"Creating virtual environment...")
+        print("Creating virtual environment...")
         subprocess.run([sys.executable, '-m', 'venv', str(venv_path)])
         
         # Install packages in the venv
@@ -38,26 +38,26 @@ def create_aoc_project(year, day, packages=None):
             subprocess.run([str(pip_path), 'freeze', '>', str(root_dir / 'requirements.txt')], shell=True)
     
     # Create day's files
-    template = f'''def parse_input(filename="input.txt"):
-    with open(filename) as f:
-        return f.read().strip()
+    template = '''def parse_input(filename="input.txt"):
+        with open(filename) as f:
+            return f.read().strip()
 
-def part1(data):
-    # TODO: Implement part 1
-    pass
+    def part1(data):
+        # TODO: Implement part 1
+        pass
 
-def part2(data):
-    # TODO: Implement part 2
-    pass
+    def part2(data):
+        # TODO: Implement part 2
+        pass
 
-def main():
-    data = parse_input()
-    print(f"Part 1: {{part1(data)}}")
-    print(f"Part 2: {{part2(data)}}")
+    def main():
+        data = parse_input()
+        print(f"Part 1: {part1(data)}")
+        print(f"Part 2: {part2(data)}")
 
-if __name__ == "__main__":
-    main()
-'''
+    if __name__ == "__main__":
+        main()
+    '''
     
     # Create files
     (project_path / f'{day:02d}.py').write_text(template)
@@ -65,8 +65,8 @@ if __name__ == "__main__":
     (project_path / 'test_input.txt').touch()
     
     print(f"\nCreated AoC {year} Day {day} project!")
-    print(f"Project structure:")
-    print(f"src/")
+    print("Project structure:")
+    print("src/")
     print(f"└── {year}/")
     print(f"    └── Day_{day:02d}/")
     print(f"        ├── {day:02d}.py")

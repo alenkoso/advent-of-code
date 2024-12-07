@@ -12,6 +12,8 @@ ignore =
     E722,
     # Allow simpler boolean comparisons
     E712
+    # allow empty f-strings
+    F541
 
-max-line-length = 120
+max-line-length = 180
 exclude = .git,__pycache__,build,dist
