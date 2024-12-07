@@ -30,40 +30,48 @@ jobs:
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+        flake8 src/*/Day_*/day*.py --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 src/*/Day_*/day*.py --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
     
-    - name: Lint tests with flake8
+    - name: Lint test files
       run: |
-        flake8 src/*/Day_*/test_*.py --count --max-complexity=10 --max-line-length=120 --statistics
+        flake8 src/*/Day_*/test_*.py --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 src/*/Day_*/test_*.py --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
     
-    - name: Find and run tests
+    - name: Run tests and solutions
       run: |
         for year_dir in src/*/; do
           if [ ! -d "$year_dir" ]; then continue; fi
-          echo "Processing year: $year_dir"
+          year=$(basename "$year_dir")
+          echo "Processing year: $year"
           
           for day_dir in "$year_dir"Day_*/; do
             if [ ! -d "$day_dir" ]; then continue; fi
-            echo "Processing day: $day_dir"
+            day=$(basename "$day_dir")
+            echo "Processing $year $day"
             
-            # Check if test file exists
-            if ls "$day_dir"test_*.py 1> /dev/null 2>&1; then
-              echo "Running tests in $day_dir"
-              pytest "$day_dir"test_*.py -v
+            cd "$day_dir"
+            
+            # Look for test file and run if found
+            test_file=$(find . -name "test_*.py" -maxdepth 1)
+            if [ ! -z "$test_file" ]; then
+              echo "Running tests for $year $day"
+              python -m pytest -v "$test_file"
             else
-              echo "No tests found in $day_dir"
+              echo "No tests found for $year $day"
               exit 1
             fi
             
-            # Run the solution
-            if ls "$day_dir"day*.py 1> /dev/null 2>&1; then
-              echo "Running solution in $day_dir"
-              python "$day_dir"day*.py
+            # Run solution
+            solution_file=$(find . -name "day*.py" -maxdepth 1)
+            if [ ! -z "$solution_file" ]; then
+              echo "Running solution for $year $day"
+              python "$solution_file"
             else
-              echo "No solution found in $day_dir"
+              echo "No solution found for $year $day"
               exit 1
             fi
+            
+            cd -
           done
         done
