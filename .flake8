@@ -1,0 +1,17 @@
+[flake8]
+ignore = 
+    # Allow imports not at top of file
+    E402,
+    # Single line between functions is fine
+    E302,E305,
+    # Allow blank lines with whitespace
+    W293,
+    # Allow missing newline at end of file
+    W292,
+    # Allow bare except
+    E722,
+    # Allow simpler boolean comparisons
+    E712
+
+max-line-length = 120
+exclude = .git,__pycache__,build,dist

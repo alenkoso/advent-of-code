@@ -29,14 +29,10 @@ jobs:
     
     - name: Lint with flake8
       run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 src/*/Day_*/day*.py --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 src/*/Day_*/day*.py --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
-    
-    - name: Lint test files
-      run: |
-        flake8 src/*/Day_*/test_*.py --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 src/*/Day_*/test_*.py --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+        # Check for serious errors only
+        flake8 . --count --select=F,E9,W6 --show-source --statistics
+        # Run full linting with configured rules
+        flake8 . --count --max-complexity=10 --statistics
     
     - name: Run tests and solutions
       run: |
