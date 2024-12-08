@@ -1,0 +1,120 @@
+name: Advent of Code CI
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'src/2023/**'
+      - 'src/2022/**'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - 'src/2023/**'
+      - 'src/2022/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Lint with flake8
+      run: |
+        # Check for serious errors only
+        flake8 . --select=F,E9,W6
+        # Run full linting
+        flake8 .
+
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Run tests
+      run: |
+        for year_dir in src/*/; do
+          if [ "$year_dir" = "src/2023/" ] || [ "$year_dir" = "src/2022/" ]; then
+            continue
+          fi
+          if [ ! -d "$year_dir" ]; then continue; fi
+          echo "Testing year: $(basename "$year_dir")"
+          
+          for day_dir in "$year_dir"Day_*/; do
+            if [ ! -d "$day_dir" ]; then continue; fi
+            echo "Testing $(basename "$year_dir") $(basename "$day_dir")"
+            
+            cd "$day_dir"
+            test_file=$(find . -name "test_*.py" -maxdepth 1)
+            if [ ! -z "$test_file" ]; then
+              python -m pytest -v "$test_file"
+            else
+              echo "No tests found in $day_dir"
+              exit 1
+            fi
+            cd -
+          done
+        done
+
+  run-solutions:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Run solutions
+      run: |
+        for year_dir in src/*/; do
+          if [ "$year_dir" = "src/2023/" ] || [ "$year_dir" = "src/2022/" ]; then
+            continue
+          fi
+          if [ ! -d "$year_dir" ]; then continue; fi
+          echo "Running solutions for year: $(basename "$year_dir")"
+          
+          for day_dir in "$year_dir"Day_*/; do
+            if [ ! -d "$day_dir" ]; then continue; fi
+            echo "Running solution for $(basename "$year_dir") $(basename "$day_dir")"
+            
+            cd "$day_dir"
+            solution_file=$(find . -name "day*.py" -maxdepth 1)
+            if [ ! -z "$solution_file" ]; then
+              python "$solution_file"
+            else
+              echo "No solution found in $day_dir"
+              exit 1
+            fi
+            cd -
+          done
+        done
