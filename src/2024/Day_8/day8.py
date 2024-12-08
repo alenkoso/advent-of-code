@@ -1,55 +1,98 @@
-# Read grid and find all antenna positions by frequency
+import sys
+import os
+import time
 from collections import defaultdict
 
-grid = [list(l.strip()) for l in open('input.txt') if l.strip()]
-R, C = len(grid), len(grid[0])
+project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+sys.path.append(project_root)
 
-# Group antennas by frequency
-antennas = defaultdict(list)
-for i in range(R):
-    for j in range(C):
-        if grid[i][j] not in '.':
-            antennas[grid[i][j]].append((i,j))
+from helpers.file_utils import read_input_file
 
-def get_antinode(p1, p2):
-    # Get both antinode positions given two antenna positions
-    x1,y1 = p1
-    x2,y2 = p2
+def parse_input(lines):
+    # Create grid and track antenna positions
+    grid = []
+    antennas = defaultdict(list)
     
-    # Vector from p1 to p2
-    dx = x2 - x1
-    dy = y2 - y1
-    
-    # Get both antinodes (1/2 and 2x distance)
-    results = []
-    
-    # Half distance point
-    x3 = x1 + dx/2
-    y3 = y1 + dy/2
-    # Double distance point
-    x4 = x2 + dx
-    y4 = y2 + dy
-    # And other side
-    x5 = x1 - dx
-    y5 = y1 - dy
-    
-    for x,y in [(x3,y3), (x4,y4), (x5,y5)]:
-        # Check if in bounds and is integer position
-        if (0 <= x < R and 0 <= y < C and 
-            abs(x - round(x)) < 1e-10 and 
-            abs(y - round(y)) < 1e-10):
-            results.append((round(x),round(y)))
-    
-    return results
+    for i, line in enumerate(lines):
+        grid.append(list(line.strip()))
+        for j, c in enumerate(line.strip()):
+            if c != '.':
+                antennas[c].append((i, j))
+                
+    return grid, antennas
 
-antinodes = set()
+def is_collinear(p1, p2, p3=None):
+    if p3 is None:
+        x1, y1 = p1
+        x2, y2 = p2
+        dx = x2 - x1
+        dy = y2 - y1
+        
+        if dx == 0 and dy == 0:
+            return []
+            
+        # Calculate points at double distance
+        points = [
+            (x1 - dx, y1 - dy),
+            (x2 + dx, y2 + dy)
+        ]
+        return points
+    else:
+        x1, y1 = p1
+        x2, y2 = p2
+        x3, y3 = p3
+        return (y2 - y1) * (x3 - x1) == (y3 - y1) * (x2 - x1)
 
-# For each frequency, check all pairs
-for freq in antennas:
-    points = antennas[freq]
-    for i,p1 in enumerate(points):
-        for j,p2 in enumerate(points[i+1:], i+1):
-            for antinode in get_antinode(p1, p2):
-                antinodes.add(antinode)
+def find_antinodes(grid, antennas, part2=False):
+    height = len(grid)
+    width = len(grid[0])
+    antinodes = set()
 
-print(len(antinodes))
+    for freq, points in antennas.items():
+        if len(points) < 2:
+            continue
+
+        if part2:
+            # Add antenna positions for same frequency
+            if len(points) > 1:
+                antinodes.update(points)
+
+            # Check all grid points for collinearity
+            for i, p1 in enumerate(points):
+                for j, p2 in enumerate(points[i+1:], i+1):
+                    for x in range(height):
+                        for y in range(width):
+                            if (x,y) != p1 and (x,y) != p2 and is_collinear(p1, p2, (x,y)):
+                                antinodes.add((x,y))
+        else:
+            # Part 1: Check points at double distance
+            for i, p1 in enumerate(points):
+                for p2 in points[i+1:]:
+                    potential_points = is_collinear(p1, p2)
+                    for x, y in potential_points:
+                        if 0 <= x < height and 0 <= y < width:
+                            antinodes.add((x, y))
+
+    return len(antinodes)
+
+def main():
+    # Read input
+    lines = read_input_file('input.txt', mode='lines_stripped')
+    grid, antennas = parse_input(lines)
+    
+    # Part 1
+    start_time = time.time()
+    part1_result = find_antinodes(grid, antennas)
+    end_time = time.time()
+    print(f"Part 1: {part1_result}")
+    print(f"Part 1 Execution Time: {end_time - start_time} seconds")
+    
+    # Part 2
+    start_time = time.time()
+    part2_result = find_antinodes(grid, antennas, True)
+    end_time = time.time()
+    print(f"Part 2: {part2_result}")
+    print(f"Part 2 Execution Time: {end_time - start_time} seconds")
+
+if __name__ == "__main__":
+    main()
