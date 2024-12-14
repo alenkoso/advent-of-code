@@ -92,7 +92,7 @@ def solve_part1(machines: List[Dict]) -> int:
     return total_tokens
 
 def solve_part2(machines: List[Dict]) -> int:
-    """Solve part 2: find minimum tokens needed with offset coordinates."""
+    # Solve part 2: find minimum tokens needed with offset coordinates.
     offset = 10000000000000
     total_tokens = 0
     
