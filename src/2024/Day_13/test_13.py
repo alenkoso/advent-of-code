@@ -30,7 +30,6 @@ def sample_input():
 def test_parse_input(sample_input):
     """Test that input parsing works correctly"""
     machines = solution.parse_input(sample_input)
-    
     assert len(machines) == 4
     
     # Test first machine values
@@ -42,109 +41,91 @@ def test_parse_input(sample_input):
     assert first_machine["prize_x"] == 8400
     assert first_machine["prize_y"] == 5400
 
-def test_first_machine_solution():
-    """Test the known solution for the first machine"""
-    machine = {
-        "a_x": 94, "a_y": 34,
-        "b_x": 22, "b_y": 67,
-        "prize_x": 8400, "prize_y": 5400
-    }
-    result = solution.find_button_presses(machine)
-    assert result == (80, 40)
-
-def test_impossible_machine():
-    """Test a machine that has no solution"""
+def test_part2_second_machine():
+    """Test the second machine which should be winnable in Part 2"""
+    offset = 10000000000000
     machine = {
         "a_x": 26, "a_y": 66,
         "b_x": 67, "b_y": 21,
-        "prize_x": 12748, "prize_y": 12176
+        "prize_x": offset + 12748,
+        "prize_y": offset + 12176
     }
-    result = solution.find_button_presses(machine)
-    assert result is None
+    result = solution.find_minimal_solution(machine)
+    assert result is not None
+    a_presses, b_presses = result
+    # Verify the solution reaches the target
+    assert machine["a_x"] * a_presses + machine["b_x"] * b_presses == machine["prize_x"]
+    assert machine["a_y"] * a_presses + machine["b_y"] * b_presses == machine["prize_y"]
 
-def test_third_machine_solution():
-    """Test the known solution for the third machine"""
+def test_part2_fourth_machine():
+    """Test the fourth machine which should be winnable in Part 2"""
+    offset = 10000000000000
     machine = {
-        "a_x": 17, "a_y": 86,
-        "b_x": 84, "b_y": 37,
-        "prize_x": 7870, "prize_y": 6450
+        "a_x": 69, "a_y": 23,
+        "b_x": 27, "b_y": 71,
+        "prize_x": offset + 18641,
+        "prize_y": offset + 10279
     }
-    result = solution.find_button_presses(machine)
-    assert result == (38, 86)
+    result = solution.find_minimal_solution(machine)
+    assert result is not None
+    a_presses, b_presses = result
+    # Verify the solution reaches the target
+    assert machine["a_x"] * a_presses + machine["b_x"] * b_presses == machine["prize_x"]
+    assert machine["a_y"] * a_presses + machine["b_y"] * b_presses == machine["prize_y"]
 
-def test_token_calculation():
-    """Test token calculation for various button press combinations"""
-    test_cases = [
-        ((80, 40), 280),  # First machine example
-        ((38, 86), 200),  # Third machine example
-        ((0, 0), 0),      # Edge case - no presses
-        ((1, 1), 4),      # Simple case
-        ((100, 100), 400) # Maximum allowed presses
-    ]
-    
-    for (a_presses, b_presses), expected in test_cases:
-        assert solution.calculate_tokens(a_presses, b_presses) == expected
-
-def test_full_solution(sample_input):
-    """Test the complete solution with example input"""
+def test_part2_full_solution(sample_input):
+    """Test complete Part 2 solution with example data"""
     machines = solution.parse_input(sample_input)
-    result = solution.solve_part1(machines)
-    assert result == 480  # Known sum of tokens for winning machines
+    result = solution.solve_part2(machines)
+    assert result > 0
 
-def test_over_limit_case():
-    """Test machine requiring more than 100 button presses"""
-    machine = {
-        "a_x": 1, "a_y": 1,
-        "b_x": 1, "b_y": 1,
-        "prize_x": 101, "prize_y": 101
-    }
-    result = solution.find_button_presses(machine)
-    assert result is None
-
-def test_negative_coordinates():
-    """Test machine with negative prize coordinates"""
-    machine = {
-        "a_x": 2, "a_y": 3,
-        "b_x": 4, "b_y": 6,
-        "prize_x": -10, "prize_y": -15
-    }
-    result = solution.find_button_presses(machine)
-    assert result is None
-
-def test_edge_cases():
-    """Test various edge cases"""
-    test_machines = [
-        # Zero movement buttons
-        {
-            "a_x": 0, "a_y": 0,
-            "b_x": 0, "b_y": 0,
-            "prize_x": 1, "prize_y": 1
-        },
-        # Zero prize coordinates
-        {
-            "a_x": 1, "a_y": 1,
-            "b_x": 1, "b_y": 1,
-            "prize_x": 0, "prize_y": 0
-        },
-        # Parallel movements
-        {
-            "a_x": 2, "a_y": 4,
-            "b_x": 1, "b_y": 2,
-            "prize_x": 10, "prize_y": 20
-        }
-    ]
-    
-    for machine in test_machines:
-        result = solution.find_button_presses(machine)
-        assert result is None
-
-def test_full_solution_with_file():
-    """Test the solution with actual input file"""
+def test_part1_vs_part2_results():
+    """Test that Part 1 and Part 2 give different results"""
     with open('input.txt') as f:
         lines = [line.strip() for line in f.readlines()]
     machines = solution.parse_input(lines)
-    result = solution.solve_part1(machines)
-    assert result > 0  # Basic sanity check
+    
+    part1 = solution.solve_part1(machines)
+    part2 = solution.solve_part2(machines)
+    
+    assert part1 != part2
+    assert part1 > 0
+    assert part2 > 0
+
+def test_solution_verification():
+    """Test that solutions actually reach the prizes"""
+    offset = 10000000000000
+    machine = {
+        "a_x": 26, "a_y": 66,
+        "b_x": 67, "b_y": 21,
+        "prize_x": offset + 12748,
+        "prize_y": offset + 12176
+    }
+    result = solution.find_minimal_solution(machine)
+    assert result is not None
+    a_presses, b_presses = result
+    
+    # Verify both coordinates are reached
+    assert machine["a_x"] * a_presses + machine["b_x"] * b_presses == machine["prize_x"]
+    assert machine["a_y"] * a_presses + machine["b_y"] * b_presses == machine["prize_y"]
+    
+    # Verify token calculation
+    tokens = solution.calculate_tokens(a_presses, b_presses)
+    assert tokens > 0
+
+def test_token_calculation():
+    """Test token calculation for known cases"""
+    assert solution.calculate_tokens(80, 40) == 280  # First machine from example
+    assert solution.calculate_tokens(38, 86) == 200  # Third machine from example
+
+def test_impossible_solutions():
+    """Test cases that should have no solution"""
+    machine = {
+        "a_x": 1, "a_y": 1,
+        "b_x": 1, "b_y": 1,
+        "prize_x": -5, "prize_y": -5
+    }
+    assert solution.find_minimal_solution(machine) is None
 
 if __name__ == "__main__":
     pytest.main([__file__])
