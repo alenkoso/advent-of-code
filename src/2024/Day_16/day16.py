@@ -17,7 +17,7 @@ def calculate_manhattan_distance(pos1, pos2):
 
 def reindeer_maze_lowest_score(grid, start, end):
     directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # N, E, S, W
-    start_dir = 1  # Starting facing East
+    start_dir = 1
     queue = [(0, start[0], start[1], start_dir)]  # (cost, row, col, direction)
     visited = set()
 
@@ -37,10 +37,59 @@ def reindeer_maze_lowest_score(grid, start, end):
                 turn_cost = 1000 if i != d else 0
                 heapq.heappush(queue, (cost + step_cost + turn_cost, nr, nc, i))
 
-    return float('inf')  # If no path is found
+    return float('inf')  #no path found
 
-# Load and parse the input
 maze, start, end = parse_maze("input.txt")
-
-# Find the lowest score to navigate the maze
+#part 1
 print(reindeer_maze_lowest_score(maze, start, end))
+
+##########################################################################################################
+def reindeer_maze_paths(grid, start, end):
+    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # N, E, S, W
+    start_dir = 1  # Starting facing East
+    queue = [(0, start[0], start[1], start_dir)]  # (cost, row, col, direction)
+    visited = set()
+    predecessors = {}
+
+    best_cost = float('inf')
+
+    while queue:
+        cost, r, c, d = heapq.heappop(queue)
+        if cost > best_cost:
+            continue
+        if (r, c, d) in visited:
+            continue
+        visited.add((r, c, d))
+
+        if (r, c) == end:
+            best_cost = cost
+
+        for i, (dr, dc) in enumerate(directions):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]) and grid[nr][nc] != '#':
+                step_cost = 1
+                turn_cost = 1000 if i != d else 0
+                new_cost = cost + step_cost + turn_cost
+
+                if new_cost <= best_cost:
+                    heapq.heappush(queue, (new_cost, nr, nc, i))
+                    if (nr, nc) not in predecessors:
+                        predecessors[(nr, nc)] = set()
+                    predecessors[(nr, nc)].add((r, c))
+
+    optimal_tiles = set()
+    stack = [end]
+    while stack:
+        tile = stack.pop()
+        if tile in optimal_tiles:
+            continue
+        optimal_tiles.add(tile)
+        if tile in predecessors:
+            stack.extend(predecessors[tile])
+
+    return optimal_tiles
+
+
+#part2
+optimal_tiles = reindeer_maze_paths(maze, start, end)
+print(len(optimal_tiles))
