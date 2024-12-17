@@ -1,4 +1,5 @@
-import os,sys
+import os
+import sys
 from collections import defaultdict,deque
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
