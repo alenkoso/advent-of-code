@@ -1,46 +1,85 @@
 import heapq
 
-def parse_maze(file_path):
-    with open(file_path, 'r') as f:
-        grid = [list(line.strip()) for line in f.readlines()]
-    start = end = None
-    for r, row in enumerate(grid):
-        for c, cell in enumerate(row):
-            if cell == 'S':
+def parse_input(file_path):
+    grid = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            grid.append(list(line.strip()))
+    return grid
+
+def parse_positions(grid):
+    start, end = None, None
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] == "S":
                 start = (r, c)
-            elif cell == 'E':
+            elif grid[r][c] == "E":
                 end = (r, c)
-    return grid, start, end
+    return start, end
 
-def calculate_manhattan_distance(pos1, pos2):
-    return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
-
-def reindeer_maze_lowest_score(grid, start, end):
-    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # N, E, S, W
-    start_dir = 1  # Starting facing East
-    queue = [(0, start[0], start[1], start_dir)]  # (cost, row, col, direction)
+def part1(grid, start, end):
+    rows, cols = len(grid), len(grid[0])
+    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+    q = [(0, start[0], start[1], 1)]
     visited = set()
+    best_score = None
+    path_costs = {}
 
-    while queue:
-        cost, r, c, d = heapq.heappop(queue)
+    while q:
+        cost, r, c, d = heapq.heappop(q)
         if (r, c, d) in visited:
             continue
         visited.add((r, c, d))
-
+        path_costs[(r, c, d)] = cost
         if (r, c) == end:
-            return cost
+            if best_score is None:
+                best_score = cost
+                break
+        dr, dc = directions[d]
+        nr, nc = r + dr, c + dc
+        if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] != "#":
+            heapq.heappush(q, (cost + 1, nr, nc, d))
+        heapq.heappush(q, (cost + 1000, r, c, (d + 1) % 4))
+        heapq.heappush(q, (cost + 1000, r, c, (d - 1) % 4))
 
-        for i, (dr, dc) in enumerate(directions):
-            nr, nc = r + dr, c + dc
-            if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]) and grid[nr][nc] != '#':
-                step_cost = 1
-                turn_cost = 1000 if i != d else 0
-                heapq.heappush(queue, (cost + step_cost + turn_cost, nr, nc, i))
+    return best_score, path_costs
 
-    return float('inf')  # If no path is found
+def part2(grid, start, end, best_score, forward_costs):
+    rows, cols = len(grid), len(grid[0])
+    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+    q = [(0, end[0], end[1], d) for d in range(4)]
+    visited = set()
+    backward_costs = {}
+    optimal_tiles = set()
 
-# Load and parse the input
-maze, start, end = parse_maze("input.txt")
+    while q:
+        cost, r, c, d = heapq.heappop(q)
+        if (r, c, d) in visited:
+            continue
+        visited.add((r, c, d))
+        backward_costs[(r, c, d)] = cost
+        dr, dc = directions[(d + 2) % 4]
+        nr, nc = r + dr, c + dc
+        if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] != "#":
+            heapq.heappush(q, (cost + 1, nr, nc, d))
+        heapq.heappush(q, (cost + 1000, r, c, (d + 1) % 4))
+        heapq.heappush(q, (cost + 1000, r, c, (d - 1) % 4))
 
-# Find the lowest score to navigate the maze
-print(reindeer_maze_lowest_score(maze, start, end))
+    for r in range(rows):
+        for c in range(cols):
+            for d in range(4):
+                if (r, c, d) in forward_costs and (r, c, d) in backward_costs:
+                    total_cost = forward_costs[(r, c, d)] + backward_costs[(r, c, d)]
+                    if total_cost == best_score:
+                        optimal_tiles.add((r, c))
+
+    return len(optimal_tiles)
+
+if __name__ == "__main__":
+    grid = parse_input("input.txt")
+    start, end = parse_positions(grid)
+    
+    score, forward_costs = part1(grid, start, end)
+    print(f"Part 1: {score}")
+    optimal_count = part2(grid, start, end, score, forward_costs)
+    print(f"Part 2: {optimal_count}")
