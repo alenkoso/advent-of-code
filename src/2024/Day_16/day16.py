@@ -3,141 +3,115 @@ import heapq
 import sys
 import os
 
-# Adjust the project path
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
 
 from helpers.parsing_utils import read_input_file_to_grid
 
+def find_start_end(maze):
+    start_pos, end_pos = None, None
+    for row_idx in range(len(maze)):
+        for col_idx in range(len(maze[0])):
+            if maze[row_idx][col_idx] == "S":
+                start_pos = (row_idx, col_idx)
+            elif maze[row_idx][col_idx] == "E":
+                end_pos = (row_idx, col_idx)
+    return start_pos, end_pos
 
-def locate_start_and_end(grid):
-    start_position, end_position = None, None
-    for row_index, row in enumerate(grid):
-        for col_index, cell in enumerate(row):
-            if cell == 'S':
-                start_position = (row_index, col_index)
-            elif cell == 'E':
-                end_position = (row_index, col_index)
-    return start_position, end_position
-
-
-def execute_a_star_search(grid, start_position, movement_directions, reverse_search=False):
-    num_rows, num_cols = len(grid), len(grid[0])
-    priority_queue = []
-    distance_map = {}
-    visited_states = set()
-
-    # Initialize queue for forward or reverse search
-    if reverse_search:
-        for direction in range(4):
-            heapq.heappush(priority_queue, (0, *start_position, direction))
-    else:
-        heapq.heappush(priority_queue, (0, *start_position, 1))  # Start facing East
-
+def find_best_path(maze, starting_point, target_point):
+    possible_moves = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+    maze_height, maze_width = len(maze), len(maze[0])
+    priority_queue = [(0, starting_point[0], starting_point[1], 1)]
+    seen_states = set()
+    lowest_score = None
+    path_distances = {}
+    
     while priority_queue:
-        current_cost, row, col, current_direction = heapq.heappop(priority_queue)
-
-        if (row, col, current_direction) not in distance_map:
-            distance_map[(row, col, current_direction)] = current_cost
-
-        if (row, col, current_direction) in visited_states:
+        distance, current_row, current_col, facing = heapq.heappop(priority_queue)
+        
+        if (current_row, current_col, facing) in seen_states:
             continue
-        visited_states.add((row, col, current_direction))
+            
+        seen_states.add((current_row, current_col, facing))
+        path_distances[(current_row, current_col, facing)] = distance
+        
+        if (current_row, current_col) == target_point and lowest_score is None:
+            lowest_score = distance
+            break
 
-        # Move forward
-        row_delta, col_delta = movement_directions[current_direction]
-        next_row, next_col = row + row_delta, col + col_delta
-        if 0 <= next_row < num_rows and 0 <= next_col < num_cols and grid[next_row][next_col] != '#':
-            heapq.heappush(priority_queue, (current_cost + 1, next_row, next_col, current_direction))
+        move_row, move_col = possible_moves[facing]
+        next_row = current_row + move_row
+        next_col = current_col + move_col
+        
+        if 0 <= next_row < maze_height and 0 <= next_col < maze_width and maze[next_row][next_col] != "#":
+            heapq.heappush(priority_queue, (distance + 1, next_row, next_col, facing))
+        
+        turn_right = (facing + 1) % 4
+        turn_left = (facing - 1) % 4
+        heapq.heappush(priority_queue, (distance + 1000, current_row, current_col, turn_right))
+        heapq.heappush(priority_queue, (distance + 1000, current_row, current_col, turn_left))
+    
+    return lowest_score, path_distances
 
-        # Rotate left or right
-        heapq.heappush(priority_queue, (current_cost + 1000, row, col, (current_direction + 1) % 4))
-        heapq.heappush(priority_queue, (current_cost + 1000, row, col, (current_direction + 3) % 4))
+def find_optimal_tiles(maze, target_point, best_path_score, forward_path_costs):
+    possible_moves = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+    maze_height, maze_width = len(maze), len(maze[0])
+    priority_queue = [(0, target_point[0], target_point[1], direction) for direction in range(4)]
+    seen_states = set()
+    backward_path_costs = {}
+    tiles_on_best_path = set()
+    
+    while priority_queue:
+        distance, current_row, current_col, facing = heapq.heappop(priority_queue)
+        
+        if (current_row, current_col, facing) in seen_states:
+            continue
+            
+        seen_states.add((current_row, current_col, facing))
+        backward_path_costs[(current_row, current_col, facing)] = distance
+        
+        reverse_facing = (facing + 2) % 4
+        move_row, move_col = possible_moves[reverse_facing]
+        next_row = current_row + move_row
+        next_col = current_col + move_col
+        
+        if 0 <= next_row < maze_height and 0 <= next_col < maze_width and maze[next_row][next_col] != "#":
+            heapq.heappush(priority_queue, (distance + 1, next_row, next_col, facing))
+            
+        turn_right = (facing + 1) % 4
+        turn_left = (facing - 1) % 4
+        heapq.heappush(priority_queue, (distance + 1000, current_row, current_col, turn_right))
+        heapq.heappush(priority_queue, (distance + 1000, current_row, current_col, turn_left))
 
-    return distance_map
+    for row in range(maze_height):
+        for col in range(maze_width):
+            if maze[row][col] == "#":
+                continue
+            for facing in range(4):
+                current_state = (row, col, facing)
+                if current_state in forward_path_costs and current_state in backward_path_costs:
+                    total_distance = forward_path_costs[current_state] + backward_path_costs[current_state]
+                    if total_distance == best_path_score:
+                        tiles_on_best_path.add((row, col))
+                        break
 
+    return len(tiles_on_best_path)
+
+def main():
+    maze = read_input_file_to_grid("input.txt")
+    starting_point, target_point = find_start_end(maze)
+    
+    start_time = time.time()
+    best_score, forward_path_costs = find_best_path(maze, starting_point, target_point)
+    end_time = time.time()
+    print("Part 1: ", best_score)
+    print(f"Part 1 Execution Time: {end_time - start_time} seconds")
+    
+    start_time = time.time()
+    optimal_tile_count = find_optimal_tiles(maze, target_point, best_score, forward_path_costs)
+    end_time = time.time()
+    print("Part 2: ", optimal_tile_count)
+    print(f"Part 2 Execution Time: {end_time - start_time} seconds")
 
 if __name__ == "__main__":
-    # Movement directions: Up, Right, Down, Left
-    movement_directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
-
-    # Parse the input grid
-    grid = read_input_file_to_grid("input.txt")
-    start_position, end_position = locate_start_and_end(grid)
-
-    # Part 1: Perform forward A* search to compute the best score
-    start_time_part1 = time.time()
-    priority_queue = []
-    heapq.heappush(priority_queue, (0, *start_position, 1))  # Start facing East
-    forward_distance_map = {}
-    visited_states = set()
-    best_score = None
-
-    while priority_queue:
-        current_cost, row, col, direction = heapq.heappop(priority_queue)
-        if (row, col, direction) not in forward_distance_map:
-            forward_distance_map[(row, col, direction)] = current_cost
-        if (row, col, direction) in visited_states:
-            continue
-        visited_states.add((row, col, direction))
-        if (row, col) == end_position and best_score is None:
-            best_score = current_cost
-
-        # Move forward
-        row_delta, col_delta = movement_directions[direction]
-        next_row, next_col = row + row_delta, col + col_delta
-        if 0 <= next_row < len(grid) and 0 <= next_col < len(grid[0]) and grid[next_row][next_col] != '#':
-            heapq.heappush(priority_queue, (current_cost + 1, next_row, next_col, direction))
-
-        # Rotate left and right
-        heapq.heappush(priority_queue, (current_cost + 1000, row, col, (direction + 1) % 4))
-        heapq.heappush(priority_queue, (current_cost + 1000, row, col, (direction + 3) % 4))
-
-    execution_time_part1 = time.time() - start_time_part1
-    
-    print(f"Part 1: Best score is {best_score}")
-    print(f"Part 1 execution time: {execution_time_part1:.5f} seconds")
-
-    # Part 2: Perform backward A* search from end to compute optimal paths
-    start_time_part2 = time.time()
-    priority_queue = []
-    backward_distance_map = {}
-    visited_states = set()
-
-    for direction in range(4):
-        heapq.heappush(priority_queue, (0, *end_position, direction))
-
-    while priority_queue:
-        current_cost, row, col, direction = heapq.heappop(priority_queue)
-        if (row, col, direction) not in backward_distance_map:
-            backward_distance_map[(row, col, direction)] = current_cost
-        if (row, col, direction) in visited_states:
-            continue
-        visited_states.add((row, col, direction))
-
-        # Move backward
-        row_delta, col_delta = movement_directions[(direction + 2) % 4]
-        next_row, next_col = row + row_delta, col + col_delta
-        if 0 <= next_row < len(grid) and 0 <= next_col < len(grid[0]) and grid[next_row][next_col] != '#':
-            heapq.heappush(priority_queue, (current_cost + 1, next_row, next_col, direction))
-
-        # Rotate left and right
-        heapq.heappush(priority_queue, (current_cost + 1000, row, col, (direction + 1) % 4))
-        heapq.heappush(priority_queue, (current_cost + 1000, row, col, (direction + 3) % 4))
-
-    # Identify all tiles that are part of any optimal path
-    optimal_tiles = set()
-    for row in range(len(grid)):
-        for col in range(len(grid[0])):
-            for direction in range(4):
-                if (row, col, direction) in forward_distance_map and (row, col, direction) in backward_distance_map:
-                    total_cost = forward_distance_map[(row, col, direction)] + backward_distance_map[(row, col, direction)]
-                    if total_cost == best_score:
-                        optimal_tiles.add((row, col))
-
-    optimal_tiles_count = len(optimal_tiles)
-    execution_time_part2 = time.time() - start_time_part2
-
-    print(f"Part 2: Number of optimal tiles is {optimal_tiles_count}")
-    print(f"Part 2 execution time: {execution_time_part2:.5f} seconds")
-
+    main()
