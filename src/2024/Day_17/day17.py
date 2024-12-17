@@ -1,3 +1,11 @@
+import sys
+import os
+
+project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+sys.path.append(project_root)
+
+from helpers.file_utils import read_input_file
+
 def run_program(register_a, register_b, register_c, program, debug=False):
     registers = {'A': register_a, 'B': register_b, 'C': register_c}
     ip = 0
@@ -20,12 +28,9 @@ def run_program(register_a, register_b, register_c, program, debug=False):
         steps += 1
         opcode = program[ip]
         operand = program[ip + 1]
-        before = registers.copy()
         ip += 2
 
         if len(output) > len(program):
-            if debug:
-                print(f"Early termination: A={registers['A']}, output={output}")
             break
 
         if opcode == 0:
@@ -36,66 +41,54 @@ def run_program(register_a, register_b, register_c, program, debug=False):
             registers['B'] = combo_value(operand) % 8
         elif opcode == 3:
             if registers['A'] != 0:
-                if debug:
-                    print(f"Jump triggered: ip={ip-2}, A={registers['A']}, target={operand}")
                 ip = operand
         elif opcode == 4:
             registers['B'] ^= registers['C']
         elif opcode == 5:
-            val = combo_value(operand) % 8
-            if debug:
-                print(f"Output {val} from value {combo_value(operand)}")
-            output.append(val)
+            output.append(combo_value(operand) % 8)
         elif opcode == 6:
             registers['B'] = registers['A'] // (2 ** combo_value(operand))
         elif opcode == 7:
             registers['C'] = registers['A'] // (2 ** combo_value(operand))
-        else:
-            raise ValueError(f"Unknown opcode: {opcode}")
-
-        after = registers.copy()
-        if debug:
-            print(f"Op {opcode}: A={before['A']} -> {after['A']}, B={before['B']} -> {after['B']}, C={before['C']} -> {after['C']}")
-
-        if steps == MAX_STEPS:
-            if debug:
-                print(f"Step limit reached: A={registers['A']}, B={registers['B']}, C={registers['C']}, Output={output}")
 
     return output, registers
 
 def find_min_register_a(program):
     target_length = len(program)
-    queue = [(program, target_length - 1, 0)]  # (current program, offset, value)
+    queue = [(program, target_length - 1, 0)]
 
     while queue:
         prog, offset, value = queue.pop(0)
-
-        for candidate in range(8):  # Try all possible outputs [0-7]
+        for candidate in range(8):
             next_value = (value << 3) + candidate
-            result, _ = run_program(next_value, 0, 0, prog, debug=False)
-
+            result, _ = run_program(next_value, 0, 0, prog)
+            
             if result == prog[offset:]:
                 if offset == 0:
-                    return next_value  # Found the valid A
+                    return next_value
                 queue.append((prog, offset - 1, next_value))
-    
     return None
 
-
-if __name__ == "__main__":
-    with open("input.txt") as file:
-        lines = file.read().splitlines()
+def main():
+    # Read input
+    lines = read_input_file("input.txt", mode='lines')
     
+    # Parse registers
     register_a = int(lines[0].split(": ")[1])
     register_b = int(lines[1].split(": ")[1])
     register_c = int(lines[2].split(": ")[1])
 
+    # Parse program
     program_line = next(line for line in lines if line.startswith("Program:"))
     program = list(map(int, program_line.split(": ")[1].split(",")))
 
-    part_one_output, registers = run_program(register_a, register_b, register_c, program, debug=False)
-    print("Part 1 Output:", ",".join(map(str, part_one_output)))
-    print("Final Registers:", registers)
+    # Part 1
+    part_one_output, registers = run_program(register_a, register_b, register_c, program)
+    print(f"Part 1: {','.join(map(str, part_one_output))}")
 
+    # Part 2
     lowest_a = find_min_register_a(program)
-    print("Part 2:", lowest_a)
+    print(f"Part 2: {lowest_a}")
+
+if __name__ == "__main__":
+    main()
