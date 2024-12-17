@@ -1,130 +1,94 @@
 import os
 import sys
-from collections import deque
-import time
+from collections import defaultdict,deque
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.append(project_root)
 
 from helpers.parsing_utils import read_input_file_strip_lines
 
-# WIDHT = 101
-# 103 = 103
-
 def parse_robots(lines):
     robots = []
     for line in lines:
-        print(f"Debug: raw line = '{line}'")  # Debug print
-        try:
-            # Try different parsing approaches based on the format
-            numbers = [int(x) for x in line.split() if x.isdigit()]
-            if len(numbers) >= 4:
-                x, y, dx, dy = numbers[:4]
-                robots.append([x, y, dx, dy])
-        except Exception as e:
-            print(f"Error parsing line: {line}")
-            print(f"Exception: {e}")
-            raise
+        position, velocity = line.split()
+        robot_x, robot_y = map(int, position.replace('p=','').split(','))
+        velocity_x, velocity_y = map(int, velocity.replace('v=','').split(','))
+        robots.append([robot_x, robot_y, velocity_x, velocity_y])
     return robots
 
-def print_grid(grid):
-    for row in grid:
-        print(''.join(row))
-    print()
+def simulate_step(robots, grid_width, grid_height):
+    for robot in robots:
+        robot[0] = (robot[0] + robot[2]) % grid_width
+        robot[1] = (robot[1] + robot[3]) % grid_height
 
-def find_separate_components(robots):
-    # Create grid representation
-    grid = [['.' for _ in range(103)] for _ in range(101)]
-    for x,y,_,_ in robots:
-        x = x % 101
-        y = y % 103
-        grid[x][y] = '#'
+def calculate_safety_factor(robots, grid_width, grid_height):
+    middle_x, middle_y = grid_width//2, grid_height//2
+    robot_positions = defaultdict(int)
+    quadrant_counts = [0]*4
+
+    for robot in robots:
+        robot_positions[(robot[0], robot[1])] += 1
+
+    for (position_x, position_y), robot_count in robot_positions.items():
+        if position_x != middle_x and position_y != middle_y:
+            quadrant_index = (1 if position_x > middle_x else 0) + (2 if position_y > middle_y else 0)
+            quadrant_counts[quadrant_index] += robot_count
+
+    return quadrant_counts[0] * quadrant_counts[1] * quadrant_counts[2] * quadrant_counts[3]
+
+def count_components(robots, grid_width, grid_height):
+    directions = [(-1,0), (1,0), (0,-1), (0,1)]
+    visited_positions = set()
+    component_count = 0
+    occupied_positions = defaultdict(bool)
     
-    # Find connected components using BFS
-    dirs = [(-1,0), (0,1), (1,0), (0,-1)]
-    seen = set()
-    components = 0
+    for robot in robots:
+        occupied_positions[(robot[0], robot[1])] = True
     
-    for x in range(101):
-        for y in range(103):
-            if grid[x][y] == '#' and (x,y) not in seen:
-                components += 1
-                queue = deque([(x,y)])
-                while queue:
-                    cx, cy = queue.popleft()
-                    if (cx,cy) in seen:
+    for x_coord in range(grid_width):
+        for y_coord in range(grid_height):
+            if occupied_positions[(x_coord, y_coord)] and (x_coord, y_coord) not in visited_positions:
+                component_count += 1
+                position_queue = deque([(x_coord, y_coord)])
+                
+                while position_queue:
+                    current_x, current_y = position_queue.popleft()
+                    if (current_x, current_y) in visited_positions:
                         continue
-                    seen.add((cx,cy))
-                    for dx,dy in dirs:
-                        nx, ny = cx+dx, cy+dy
-                        if 0 <= nx < 101 and 0 <= ny < 103 and grid[nx][ny] == '#':
-                            queue.append((nx,ny))
-                            
-    # Print the current grid state
-    if components <= 400:
-        print(f"\nGrid state at step with {components} components:")
-        print_grid(grid)
+                    
+                    visited_positions.add((current_x, current_y))
+                    
+                    for delta_x, delta_y in directions:
+                        next_x = (current_x + delta_x) % grid_width
+                        next_y = (current_y + delta_y) % grid_height
+                        if occupied_positions[(next_x, next_y)] and (next_x, next_y) not in visited_positions:
+                            position_queue.append((next_x, next_y))
     
-    return components
-            
+    return component_count
+
+def part1(robots, grid_width, grid_height):
+    for _ in range(100):
+        simulate_step(robots, grid_width, grid_height)
+    return calculate_safety_factor(robots, grid_width, grid_height)
+
+def part2(robots, grid_width, grid_height, start_time=100):
+    current_time = start_time
+    while True:
+        current_time += 1
+        simulate_step(robots, grid_width, grid_height)
+        if count_components(robots, grid_width, grid_height) <= 200:
+            return current_time
+
+def main():
+    grid_width, grid_height = 101, 103
+    input_lines = read_input_file_strip_lines("input.txt")
+    robots = parse_robots(input_lines)
+    
+    part_1 = part1(robots.copy(), grid_width, grid_height)
+    print("Part 1: ", part_1)
+    
+    part_2 = part2(robots, grid_width, grid_height)
+    print("Part 2: ", part_2)
 
 if __name__ == "__main__":
-    # Read and parse the input file
-    lines = read_input_file_strip_lines("input.txt")
-
-    robots = []
-    for line in lines:
-        p_part, v_part = line.split(' v=')
-        px, py = map(int, p_part[2:].split(','))
-        vx, vy = map(int, v_part.split(','))
-        robots.append([px, py, vx, vy])
-
-
-    start_time = time.time()
-
-    for t in range(1, 10**6):
-        # Create fresh grid for visualization
-        G = [['.' for _ in range(103)] for _ in range(101)]
-
-        for i, (px, py, vx, vy) in enumerate(robots):
-            px += vx
-            py += vy
-
-            # Wrap coordinates around edges
-            px %= 101
-            py %= 103
-
-            robots[i] = [px, py, vx, vy]
-            G[px][py] = '#'
-
-        # Count connected components
-        components = 0
-        SEEN = set()
-
-        for x in range(101):
-            for y in range(103):
-                if G[x][y] == '#' and (x, y) not in SEEN:
-                    components += 1
-                    Q = deque([(x, y)])
-
-                    while Q:
-                        cx, cy = Q.popleft()
-                        if (cx, cy) in SEEN:
-                            continue
-                        SEEN.add((cx, cy))
-
-                        for dx, dy in [(-1, 0), (0, 1), (1, 0), (0, -1)]:
-                            nx, ny = (cx + dx) % 101, (cy + dy) % 103
-                            if G[nx][ny] == '#' and (nx, ny) not in SEEN:
-                                Q.append((nx, ny))
-
-        # Detect Easter egg: Example threshold refinement
-        if components <= 400:  # Adjust this value based on pattern
-            print(f"Part 2: {t}")
-            print(f"Part 2 Execution Time: {time.time() - start_time:.2f} seconds")
-            print(f"Components: {components}")
-
-            # Visualize grid
-            print(f"\nGrid at step {t}:")
-            for row in G:
-                print(''.join(row))
+    main()
