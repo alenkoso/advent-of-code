@@ -33,6 +33,23 @@ def find_shortest_path(grid):
 
     return -1
 
+def part1(raw_input):
+    byte_positions = parse_input(raw_input)
+    grid = simulate_falling_bytes(71, byte_positions, 1024)
+    return find_shortest_path(grid)
+
+def part2(raw_input):
+    byte_positions = parse_input(raw_input)
+    grid_size = 71
+    grid = [[False] * grid_size for _ in range(grid_size)]
+
+    for i, (x, y) in enumerate(byte_positions):
+        grid[y][x] = True
+        if find_shortest_path(grid) == -1:
+            return f"{x},{y}"
+
+    return None
+
 example_input = """5,4
 4,2
 4,5
@@ -62,8 +79,5 @@ example_input = """5,4
 if __name__ == "__main__":
     with open("input.txt") as f:
         puzzle_input = f.read()
-        
-    byte_positions = parse_input(puzzle_input)
-    grid = simulate_falling_bytes(71, byte_positions, 1024)
-    
-    print("Part 1:", find_shortest_path(grid))
+    print("Part 1:", part1(puzzle_input))
+    print("Part 2:", part2(puzzle_input))
