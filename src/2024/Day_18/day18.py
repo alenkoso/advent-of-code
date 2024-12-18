@@ -1,7 +1,15 @@
+import os
+import sys
+import time
 from collections import deque
 
-def parse_input(raw_input):
-    return [tuple(map(int, line.split(','))) for line in raw_input.strip().split('\n')]
+project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+sys.path.append(project_root)
+
+from helpers.parsing_utils import read_input_file_strip_lines
+
+def parse_input(lines):
+    return [tuple(map(int, line.split(','))) for line in lines]
 
 def simulate_falling_bytes(grid_size, byte_positions, limit):
     grid = [[False] * grid_size for _ in range(grid_size)]
@@ -33,13 +41,11 @@ def find_shortest_path(grid):
 
     return -1
 
-def part1(raw_input):
-    byte_positions = parse_input(raw_input)
+def part1(byte_positions):
     grid = simulate_falling_bytes(71, byte_positions, 1024)
     return find_shortest_path(grid)
 
-def part2(raw_input):
-    byte_positions = parse_input(raw_input)
+def part2(byte_positions):
     grid_size = 71
     grid = [[False] * grid_size for _ in range(grid_size)]
 
@@ -50,34 +56,23 @@ def part2(raw_input):
 
     return None
 
-example_input = """5,4
-4,2
-4,5
-3,0
-2,1
-6,3
-2,4
-1,5
-0,6
-3,3
-2,6
-5,1
-1,2
-5,5
-2,5
-6,5
-1,4
-0,4
-6,4
-1,1
-6,1
-1,0
-0,5
-1,6
-2,0"""
+def main():
+    lines = read_input_file_strip_lines("input.txt")
+    byte_positions = parse_input(lines)
+    
+    # Part 1
+    start_time = time.time()
+    part1_result = part1(byte_positions)
+    end_time = time.time()
+    print(f"Part 1: {part1_result}")
+    print(f"Part 1 Execution Time: {end_time - start_time} seconds")
+    
+    # Part 2
+    start_time = time.time()
+    part2_result = part2(byte_positions)
+    end_time = time.time()
+    print(f"Part 2: {part2_result}")
+    print(f"Part 2 Execution Time: {end_time - start_time} seconds")
 
 if __name__ == "__main__":
-    with open("input.txt") as f:
-        puzzle_input = f.read()
-    print("Part 1:", part1(puzzle_input))
-    print("Part 2:", part2(puzzle_input))
+    main()
