@@ -21,10 +21,26 @@ def is_design_possible(patterns, design):
 def part1(patterns, designs):
     return sum(is_design_possible(patterns, design) for design in designs)
 
+def count(patterns, design):
+    dp = [0] * (len(design) + 1)
+    dp[0] = 1
+
+    for i in range(1, len(design) + 1):
+        for pattern in patterns:
+            if i >= len(pattern) and design[i - len(pattern):i] == pattern:
+                dp[i] += dp[i - len(pattern)]
+    return dp[-1]
+
+def part2(patterns, designs):
+    return sum(count(patterns, design) for design in designs)
+
 def main():
     patterns, designs = parse_input("input.txt")
-    result = part1(patterns, designs)
-    print("Part 1: ", result)
+    part_1 = part1(patterns, designs)
+    print("Part 1: ", part_1)
+    
+    part_2 = part2(patterns, designs)
+    print("Part 2: ", part_2)
 
 if __name__ == "__main__":
     main()
