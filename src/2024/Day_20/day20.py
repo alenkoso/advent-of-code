@@ -26,7 +26,7 @@ def make_graph(data, walls=False):
                     g.add_edge((r,c), (nr,nc))
     return g
 
-def part1(data, start, end):
+def count_cheats(data, start, end, max_cheat=2):
     reg_graph = make_graph(data)
     wall_graph = make_graph(data, True)
     
@@ -44,7 +44,7 @@ def part1(data, start, end):
             continue
         
         start_len = start_dists[cheat_from]
-        reachable = nx.single_source_shortest_path_length(wall_graph, cheat_from, cutoff=2)
+        reachable = nx.single_source_shortest_path_length(wall_graph, cheat_from, cutoff=max_cheat)
         
         for cheat_to, cheat_len in reachable.items():
             if data[cheat_to[0]][cheat_to[1]] not in '.SE':
@@ -60,4 +60,5 @@ def part1(data, start, end):
 
 if __name__ == "__main__":
     data, start, end = parse_input("input.txt")
-    print("Part 1:", part1(data, start, end))
+    print("Part 1:", count_cheats(data, start, end))
+    print("Part 2:", count_cheats(data, start, end, 20))
