@@ -1,64 +1,87 @@
+import os
+import sys
+import time
 import networkx as nx
 from itertools import product
 
-def parse_input(file_path):
-    data = [list(line.strip()) for line in open(file_path)]
-    start = end = None
-    for r, row in enumerate(data):
-        for c, cell in enumerate(row):
-            if cell == 'S':
-                start = (r, c)
-            elif cell == 'E':
-                end = (r, c)
-    return data, start, end
+project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+sys.path.append(project_root)
 
-def make_graph(data, walls=False):
-    g = nx.Graph()
-    rows, cols = len(data), len(data[0])
-    
-    for r, c in product(range(rows), range(cols)):
-        if not walls and data[r][c] == '#':
-            continue
-        for dr, dc in [(-1,0), (1,0), (0,-1), (0,1)]:
-            nr, nc = r + dr, c + dc
-            if 0 <= nr < rows and 0 <= nc < cols:
-                if walls or data[nr][nc] in '.SE':
-                    g.add_edge((r,c), (nr,nc))
-    return g
+from helpers.parsing_utils import read_input_file_to_grid
 
-def count_cheats(data, start, end, max_cheat=2):
-    reg_graph = make_graph(data)
-    wall_graph = make_graph(data, True)
+def parse_input(data):
+    start_pos = end_pos = None
+    for row, line in enumerate(data):
+        for col, char in enumerate(line):
+            if char == 'S':
+                start_pos = (row, col)
+            elif char == 'E':
+                end_pos = (row, col)
+    return start_pos, end_pos
+
+def build_graph(data, allow_walls=False):
+    graph = nx.Graph()
+    row_count, col_count = len(data), len(data[0])
     
-    base_len = nx.shortest_path_length(reg_graph, start, end)
-    start_dists = nx.single_source_shortest_path_length(reg_graph, start)
-    end_dists = nx.single_source_shortest_path_length(reg_graph, end)
+    for row, col in product(range(row_count), range(col_count)):
+        if not allow_walls and data[row][col] == '#':
+            continue
+            
+        for next_row, next_col in [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]:
+            if 0 <= next_row < row_count and 0 <= next_col < col_count:
+                if allow_walls or data[next_row][next_col] in '.SE':
+                    graph.add_edge((row, col), (next_row, next_col))
+                    
+    return graph
+
+def count_cheats(data, start_pos, end_pos, max_shortcut_length=2):
+    regular_graph = build_graph(data)
+    wall_graph = build_graph(data, True)
     
-    cheats = 0
-    for r, c in product(range(len(data)), range(len(data[0]))):
-        if data[r][c] not in '.SE':
+    normal_path_length = nx.shortest_path_length(regular_graph, start_pos, end_pos)
+    distances_from_start = nx.single_source_shortest_path_length(regular_graph, start_pos)
+    distances_to_end = nx.single_source_shortest_path_length(regular_graph, end_pos)
+    
+    shortcut_count = 0
+    
+    for row, col in product(range(len(data)), range(len(data[0]))):
+        if data[row][col] not in '.SE':
+            continue
+            
+        shortcut_start = (row, col)
+        if shortcut_start not in distances_from_start:
             continue
         
-        cheat_from = (r, c)
-        if cheat_from not in start_dists:
-            continue
+        path_to_shortcut = distances_from_start[shortcut_start]
+        reachable_positions = nx.single_source_shortest_path_length(wall_graph, shortcut_start, cutoff=max_shortcut_length)
         
-        start_len = start_dists[cheat_from]
-        reachable = nx.single_source_shortest_path_length(wall_graph, cheat_from, cutoff=max_cheat)
-        
-        for cheat_to, cheat_len in reachable.items():
-            if data[cheat_to[0]][cheat_to[1]] not in '.SE':
+        for shortcut_end, shortcut_length in reachable_positions.items():
+            if data[shortcut_end[0]][shortcut_end[1]] not in '.SE':
                 continue
-            if cheat_to not in end_dists:
+            if shortcut_end not in distances_to_end:
                 continue
             
-            total = start_len + cheat_len + end_dists[cheat_to]
-            if base_len - total >= 100:
-                cheats += 1
+            total_path_length = path_to_shortcut + shortcut_length + distances_to_end[shortcut_end]
+            if normal_path_length - total_path_length >= 100:
+                shortcut_count += 1
     
-    return cheats
+    return shortcut_count
+
+def main():
+    data = read_input_file_to_grid("input.txt")
+    start_pos, end_pos = parse_input(data)
+    
+    start_time = time.time()
+    part_1 = count_cheats(data, start_pos, end_pos)
+    end_time = time.time()
+    print(f"Part 1: {part_1}")
+    print(f"Part 1 Execution Time: {end_time - start_time} seconds")
+    
+    start_time = time.time()
+    part_2 = count_cheats(data, start_pos, end_pos, 20)
+    end_time = time.time()
+    print(f"Part 2: {part_2}")
+    print(f"Part 2 Execution Time: {end_time - start_time} seconds")
 
 if __name__ == "__main__":
-    data, start, end = parse_input("input.txt")
-    print("Part 1:", count_cheats(data, start, end))
-    print("Part 2:", count_cheats(data, start, end, 20))
+    main()
