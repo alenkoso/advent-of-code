@@ -8,6 +8,9 @@ def read_input_file_strip_lines(file_path):
     with open(file_path, 'r') as file:
         return file.read().strip().split("\n")
 
+def read_input_file_to_ints(file_path):
+    return [nums[0] for nums in split_lines_to_integers(read_input_file(file_path))]
+
 def split_lines_to_integers(lines):
     ### Split each line by whitespace and convert to integers.
     return [list(map(int, line.split())) for line in lines]
