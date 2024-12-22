@@ -1,49 +1,82 @@
-def compute_next_secret(secret_number):
-    MODULO = 16777216
-    secret_number ^= (secret_number * 64) % MODULO
-    secret_number %= MODULO
-    secret_number ^= (secret_number // 32) % MODULO
-    secret_number %= MODULO
-    secret_number ^= (secret_number * 2048) % MODULO
-    secret_number %= MODULO
-    return secret_number
+import os
+import sys
+import time
 
-def simulate_sequence(secret, steps):
-    for _ in range(steps):
-        secret = compute_next_secret(secret)
-    return secret
+project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+sys.path.append(project_root)
 
-def generate_deltas_and_values(secret, steps):
-    last_price = secret % 10
-    deltas = []
-    for _ in range(steps):
-        next_secret = compute_next_secret(secret)
+from helpers.parsing_utils import read_input_file_to_ints
+
+def calculate_next_secret(current_secret):
+    modulo_value = 16777216
+    
+    current_secret ^= (current_secret * 64) % modulo_value
+    current_secret %= modulo_value
+    
+    current_secret ^= (current_secret // 32) % modulo_value
+    current_secret %= modulo_value
+    
+    current_secret ^= (current_secret * 2048) % modulo_value
+    current_secret %= modulo_value
+    
+    return current_secret
+
+def get_secret_after_steps(initial_secret, number_of_steps):
+    evolving_secret = initial_secret
+    for _ in range(number_of_steps):
+        evolving_secret = calculate_next_secret(evolving_secret)
+    return evolving_secret
+
+def build_price_sequence(initial_secret, sequence_length):
+    previous_price = initial_secret % 10
+    current_secret = initial_secret
+    price_sequence = []
+    
+    for _ in range(sequence_length):
+        next_secret = calculate_next_secret(current_secret)
         current_price = next_secret % 10
-        deltas.append((current_price - last_price, current_price))
-        last_price = current_price
-        secret = next_secret
-    return deltas
+        price_delta = current_price - previous_price
+        price_sequence.append((price_delta, current_price))
+        previous_price = current_price
+        current_secret = next_secret
+    
+    return price_sequence
 
-def find_best_pattern(deltas, pattern_length):
-    patterns = {}
-    for buyer_deltas in deltas:
-        seen = set()
-        for i in range(len(buyer_deltas) - pattern_length + 1):
-            pattern = tuple(delta[0] for delta in buyer_deltas[i:i + pattern_length])
-            value = buyer_deltas[i + pattern_length - 1][1]
-            if pattern not in seen:
-                seen.add(pattern)
-                patterns[pattern] = patterns.get(pattern, 0) + value
-    best_pattern, part_2 = max(patterns.items(), key=lambda x: x[1])
-    return part_2, best_pattern
+def find_optimal_pattern(price_sequences, target_pattern_length):
+    pattern_totals = {}
+    
+    for buyer_sequence in price_sequences:
+        seen_patterns = set()
+        sequence_length = len(buyer_sequence)
+        
+        for start_pos in range(sequence_length - target_pattern_length + 1):
+            end_pos = start_pos + target_pattern_length
+            price_deltas = tuple(delta[0] for delta in buyer_sequence[start_pos:end_pos])
+            final_price = buyer_sequence[end_pos - 1][1]
+            
+            if price_deltas not in seen_patterns:
+                seen_patterns.add(price_deltas)
+                pattern_totals[price_deltas] = pattern_totals.get(price_deltas, 0) + final_price
+    
+    best_pattern, highest_total = max(pattern_totals.items(), key=lambda x: x[1])
+    return highest_total, best_pattern
 
-with open("input.txt", 'r') as file:
-    initial_secrets = [int(line.strip()) for line in file.readlines()]
+def main():
+    data = read_input_file_to_ints("input.txt")
+    
+    start_time = time.time()
+    part_1 = sum(get_secret_after_steps(secret, 2000) for secret in data)
+    end_time= time.time()
+    print("Part 1: ", part_1)
+    print("Part 1 Execution Time: ", end_time - start_time, "seconds")
+    
+    start_time = time.time()
+    price_sequences = [build_price_sequence(secret, 2000) for secret in data]
+    part_2, best_pattern = find_optimal_pattern(price_sequences, 4)
+    end_time = time.time()
+    print("Part 2: ", part_2)
+    print("Best pattern: ", best_pattern)
+    print("Part 2 Execution Time: ", end_time - start_time, "seconds")
 
-part_1 = sum(simulate_sequence(secret, 2000) for secret in initial_secrets)
-print("Part 1: ", part_1)
-
-deltas = [generate_deltas_and_values(secret, 2000) for secret in initial_secrets]
-part_2, best_pattern = find_best_pattern(deltas, 4)
-print("Part 2: ", part_2)
-print("Best pattern: ", best_pattern)
+if __name__ == "__main__":
+    main()
