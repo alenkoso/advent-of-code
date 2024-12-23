@@ -1,42 +1,68 @@
+import os
+import sys
+import time
 from itertools import combinations
 
-with open('input.txt', 'r') as file:
-    network_connections = file.read().splitlines()
+project_root = os.path.join(os.path.dirname(__file__), '..', '..', '..')
+sys.path.append(project_root)
 
-network_map = {}
-for connection in network_connections:
-    pc1, pc2 = connection.split('-')
-    network_map.setdefault(pc1, []).append(pc2)
-    network_map.setdefault(pc2, []).append(pc1)
+from helpers.parsing_utils import read_input_file_strip_lines
 
-tri_sets = set()
-for pc in network_map:
-    for pc1, pc2 in combinations(network_map[pc], 2):
-        if pc1 in network_map[pc2]:
-            triangle = tuple(sorted([pc, pc1, pc2]))
-            tri_sets.add(triangle)
+def build_network_map(lines):
+    network_map = {}
+    for line in lines:
+        computer1, computer2 = line.strip().split('-')
+        network_map.setdefault(computer1, []).append(computer2)
+        network_map.setdefault(computer2, []).append(computer1)
+    return network_map
 
-triangles_with_t = [triangle for triangle in tri_sets if any(pc.startswith('t') for pc in triangle)]
+def find_triangles(network):
+    triangle_sets = set()
+    for computer in network:
+        for computer1, computer2 in combinations(network[computer], 2):
+            if computer1 in network[computer2]:
+                triangle = tuple(sorted([computer, computer1, computer2]))
+                triangle_sets.add(triangle)
+    return triangle_sets
 
-print("Part 1: ", len(triangles_with_t))
-
-def bron_kerbosch(Rec, Potential, Exc, graph, cliques):
-    if not Potential and not Exc:
-        cliques.append(Rec)
+def bron_kerbosch(current_nodes, potential_nodes, excluded_nodes, network, cliques):
+    if not potential_nodes and not excluded_nodes:
+        cliques.append(current_nodes)
         return
-    for vertex in list(Potential):
-        neighbors = set(graph[vertex])
+    
+    for node in list(potential_nodes):
+        neighbors = set(network[node])
         bron_kerbosch(
-            Rec.union([vertex]),
-            Potential.intersection(neighbors),
-            Exc.intersection(neighbors),
-            graph,
-            cliques,
+            current_nodes.union([node]),
+            potential_nodes.intersection(neighbors),
+            excluded_nodes.intersection(neighbors),
+            network,
+            cliques
         )
-        Potential.remove(vertex)
-        Exc.add(vertex)
+        potential_nodes.remove(node)
+        excluded_nodes.add(node)
 
-all_cliques = []
-bron_kerbosch(set(), set(network_map.keys()), set(), network_map, all_cliques)
+def main():
+    lines = read_input_file_strip_lines("input.txt")
+    network = build_network_map(lines)
+    
+    start_time = time.time()
+    triangles = find_triangles(network)
+    triangles_with_t = [triangle for triangle in triangles 
+                       if any(node.startswith('t') for node in triangle)]
+    part_1 = len(triangles_with_t)
+    end_time = time.time()
+    print("Part 1:", part_1)
+    print("Part 1 Execution Time: ", end_time - start_time, "seconds")
+    
+    start_time = time.time()
+    cliques = []
+    bron_kerbosch(set(), set(network.keys()), set(), network, cliques)
+    largest_clique = max(cliques, key=len)
+    part_2 = ",".join(sorted(largest_clique))
+    end_time = time.time()
+    print("Part 2:", part_2) 
+    print("Part 2 Execution Time: ", end_time - start_time, "seconds")
 
-print("Part 2: ", ",".join(sorted(max(all_cliques, key=len))))
+if __name__ == '__main__':
+    main()
