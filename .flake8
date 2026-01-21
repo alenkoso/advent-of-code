@@ -1,0 +1,59 @@
+[flake8]
+# Increase max line length 
+max-line-length = 180
+
+# Ignore specific errors
+ignore =
+    # Block comments starting with multiple '#'
+    E266,
+    
+    # Missing blank lines
+    E302,E303,E305,E306,
+    
+    # Continuation line indentation
+    E126,E128,E129,
+    
+    # Missing whitespace
+    E225,E226,E231,
+    
+    # Trailing whitespace and blank lines
+    W291,W293,W391,
+    
+    # Multiple statements on one line
+    E701,
+    
+    # Ambiguous variable names
+    E741,
+    
+    # Indentation with tabs
+    W191,
+    
+    # Line breaks around binary operators
+    W503,W504,
+    
+    # Function complexity
+    C901
+
+# Exclude generated files, directories, and specific years
+exclude = 
+    .git,
+    __pycache__,
+    build,
+    dist,
+    *.pyc,
+    venv,
+    .env,
+    src/2023/*,
+    src/2022/*
+
+# Count errors
+count = True
+
+# Show source code generating the error
+show-source = True
+
+# Count the number of occurrences of each error
+statistics = True
+
+# Maximum allowed complexity
+max-complexity = 20
